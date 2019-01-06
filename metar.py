@@ -50,10 +50,8 @@ for airportcode in airports:
 		i += 1
 		continue
 	
-	print()
 	color = COLOR_CLEAR
 	flightCateory = conditionDict.get(airportcode,"No")
-	print(airportcode + " " + flightCateory)
 	
 	if  flightCateory != "No":
 		if flightCateory == "VFR":
@@ -67,6 +65,7 @@ for airportcode in airports:
 		else:
 			color = COLOR_CLEAR
 	
+	print()
 	print("Setting LED " + str(i) + " for " + airportcode + " to " + flightCateory + " " + str(color))
 	pixels[i] = color
 	i += 1
