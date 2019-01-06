@@ -1,0 +1,1 @@
+/usr/bin/sudo /usr/bin/python3 /home/pi/metar.py
