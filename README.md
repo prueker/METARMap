@@ -11,7 +11,7 @@ Raspberry Pi project to visualize flight conditions on a map using WS8211 LEDs a
 * Foam Board to glue LEDs into from your local crafting store
 * Shadow Box frame
 
-## Setup
+## Software Setup
 * Install [Raspbian Stretch Lite](https://www.raspberrypi.org/downloads/raspbian/) on SD card
 * [Enable Wi-Fi and SSH](https://medium.com/@danidudas/install-raspbian-jessie-lite-and-setup-wi-fi-without-access-to-command-line-or-using-the-network-97f065af722e)
 * Install SD card and power up Raspberry Pi
@@ -37,3 +37,6 @@ Raspberry Pi project to visualize flight conditions on a map using WS8211 LEDs a
 * You can check the **/home/pi/startup.log** file to see if any errors occurred
 * If you'd like to have the script refresh in regular intervals, use crontab and set the appropriate interval. For an example you can refer to the cromtab file in the GitHub repo, which runs the script once every 5 minutes (make sure you grant the file execute permissions beforehand). To edit your crontab type:
 	* crontab -e
+
+## Physical setup
+I've created some detailed instructions about the rest of the setup here: https://slingtsi.rueker.com/making-a-led-powered-metar-map-for-your-wall/
