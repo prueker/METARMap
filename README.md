@@ -1,15 +1,8 @@
 # METARMap
 Raspberry Pi project to visualize flight conditions on a map using WS8211 LEDs addressed via NeoPixel
 
-## Components used
-* [Raspberry Pi Zero W](https://www.amazon.com/gp/product/B0748MPQT4/)
-* [Micro SD Card to install Raspbian Lite](https://www.amazon.com/gp/product/B073K14CVB/)
-* [WS8211 addressable LEDs](https://www.amazon.com/gp/product/B01AG923GI/)
-* [Wires to connect Raspberry Pi to LEDs](https://www.amazon.com/gp/product/B01EV70C78/)
-* [Sectional Chart](http://www.mypilotstore.com/MyPilotStore/chart/FAA_VFR_Sectional_Charts.asp)
-* Soldering Iron
-* Foam Board to glue LEDs into from your local crafting store
-* Shadow Box frame
+## Detailed instructions
+I've created detailed instructions about the setup and parts used here: https://slingtsi.rueker.com/making-a-led-powered-metar-map-for-your-wall/
 
 ## Software Setup
 * Install [Raspbian Stretch Lite](https://www.raspberrypi.org/downloads/raspbian/) on SD card
@@ -37,6 +30,3 @@ Raspberry Pi project to visualize flight conditions on a map using WS8211 LEDs a
 * You can check the **/home/pi/startup.log** file to see if any errors occurred
 * If you'd like to have the script refresh in regular intervals, use crontab and set the appropriate interval. For an example you can refer to the cromtab file in the GitHub repo, which runs the script once every 5 minutes (make sure you grant the file execute permissions beforehand). To edit your crontab type:
 	* crontab -e
-
-## Physical setup
-I've created some detailed instructions about the rest of the setup here: https://slingtsi.rueker.com/making-a-led-powered-metar-map-for-your-wall/
