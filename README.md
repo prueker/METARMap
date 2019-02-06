@@ -28,5 +28,5 @@ I've created detailed instructions about the setup and parts used here: https://
 * Change the **/etc/rc.local** file to automatically run the **startup.sh** script, you can refer to the rc.local file in Github for reference
 * Try it out by disconnecting your Raspberry Pi from the power and reconnecting it and waiting a couple seconds
 * You can check the **/home/pi/startup.log** file to see if any errors occurred
-* If you'd like to have the script refresh in regular intervals, use crontab and set the appropriate interval. For an example you can refer to the cromtab file in the GitHub repo, which runs the script once every 5 minutes (make sure you grant the file execute permissions beforehand). To edit your crontab type:
+* If you'd like to have the script refresh in regular intervals, use crontab and set the appropriate interval. For an example you can refer to the crontab file in the GitHub repo, which runs the script once every 5 minutes (make sure you grant the file execute permissions beforehand). To edit your crontab type:
 	* crontab -e
