@@ -8,7 +8,7 @@ I've created detailed instructions about the setup and parts used here: https://
 * Install [Raspbian Stretch Lite](https://www.raspberrypi.org/downloads/raspbian/) on SD card
 * [Enable Wi-Fi and SSH](https://medium.com/@danidudas/install-raspbian-jessie-lite-and-setup-wi-fi-without-access-to-command-line-or-using-the-network-97f065af722e)
 * Install SD card and power up Raspberry Pi
-* SSH into the Raspberry and configure password and timezones
+* SSH (using [Putty](https://www.putty.org) or some other SSH tool) into the Raspberry and configure password and timezones
 	* passwd
 	* sudo raspi-config
 * Update packages 
