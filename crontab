@@ -20,4 +20,5 @@
 # For more information see the manual pages of crontab(5) and cron(8)
 #
 # m h  dom mon dow   command
-*/5 * * * *  /home/pi/refresh.sh
+*/5 7-21 * * *  /home/pi/refresh.sh
+05 22 * * *     /home/pi/lightsoff.sh
