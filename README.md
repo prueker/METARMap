@@ -24,9 +24,12 @@ I've created detailed instructions about the setup and parts used here: https://
 * Test the script by running it directly (it needs to run with root permissions to access the GPIO pins):
 	* sudo python3 metar.py
 * Make appropriate changes to the **airports** file for the airports you want to use and change the **metar.py** script to the correct **LED_COUNT** (including NULLs if you have LEDS in between airports that will stay off) and **LED_BRIGHTNESS** if you want to change it
-* To run the script automatically when you power the Raspberry Pi, you will need to grant permissions to execute the **startup.sh** script and read permissions to the **airports** and **metar.py** script using chmod
+* To run the script automatically when you power the Raspberry Pi, you will need to grant permissions to execute the **startup.sh**, **refresh.sh** and **lightsoff.sh** script and read permissions to the **airports** and **metar.py** script using chmod:
+	* **chmod +x filename** will grant execute permissions
+	* **chmod +r filename** will grant write permissions
 * Change the **/etc/rc.local** file to automatically run the **startup.sh** script, you can refer to the rc.local file in Github for reference
 * Try it out by disconnecting your Raspberry Pi from the power and reconnecting it and waiting a couple seconds
 * You can check the **/home/pi/startup.log** file to see if any errors occurred
-* If you'd like to have the script refresh in regular intervals, use crontab and set the appropriate interval. For an example you can refer to the crontab file in the GitHub repo, which runs the script once every 5 minutes (make sure you grant the file execute permissions beforehand). To edit your crontab type:
-	* crontab -e
+* If you'd like to have the script refresh in regular intervals, use crontab and set the appropriate interval. For an example you can refer to the crontab file in the GitHub repo (make sure you grant the file execute permissions beforehand). To edit your crontab type: **crontab -e**, after you are done with the edits, exit out by pressing ctrl+x and confirm the write operation
+	* The sample crontab will run the script every 5 minutes (the */5) between the hours of 7 to 21, which includes the 21 hour, so it means it will run until 21:55
+	* Then at 22:05 it will run the lightsoff.sh script, which will turn all the lights off
