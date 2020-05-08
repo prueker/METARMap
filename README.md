@@ -30,3 +30,13 @@ I've created detailed instructions about the setup and parts used here: https://
 * To have the script start up automatically and refresh in regular intervals, use crontab and set the appropriate interval. For an example you can refer to the crontab file in the GitHub repo (make sure you grant the file execute permissions beforehand to the refresh.sh and lightsoff.sh file). To edit your crontab type: **crontab -e**, after you are done with the edits, exit out by pressing ctrl+x and confirm the write operation
 	* The sample crontab will run the script every 5 minutes (the */5) between the hours of 7 to 21, which includes the 21 hour, so it means it will run until 21:55
 	* Then at 22:05 it will run the lightsoff.sh script, which will turn all the lights off
+
+## Additional Wind condition blinking/fading functionality
+I recently expanded the script to also take wind condition into account and if the wind exceeds a certain threshold, or if it is gusting, make the LED for that airport either blink on/off or to fade between  two shades of the current flight category color.
+If you want to use this extra functionality, then instead of using the **refresh.sh** and **metar.py** use the alternative **blink.sh** and **blink.py** files.
+* There are a few additional parameters in the blink.py script you can configure to your liking:
+	* FADE_INSTEAD_OF_BLINK - set this to either **True** or **False** to switch between fading or blinking for the LEDs when conditions are windy
+	* WIND_BLINK_THRESHOLD - in Knots for normal wind speeds currently at the airport
+	* ALWAYS_BLINK_FOR_GUSTS - If you always want the blinking/fading to happen for gusts, regardless of the wind speed
+	* BLINKS_SPEED - How fast the blinking happens, I found 1 second to be a happy medium so it's not too busy, but you can also make it faster, for example every half a second by using 0.5
+	* BLINK_TOTALTIME_SECONDS = How long do you want the script to run. I have this set to 300 seconds as I have my crontab setup to re-run the script every 5 minutes to get the latest weather information
