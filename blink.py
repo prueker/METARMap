@@ -37,7 +37,7 @@ BLINK_SPEED				= 1.0
 
 #Total blinking time in seconds.
 #For example set this to 300 to keep blinking for 5 minutes if you plan to run the script every 5 minutes to fetch the updated weather
-BLINK_TOTALTIME_SECONDS	= 10
+BLINK_TOTALTIME_SECONDS	= 300
 
 # Initialize the LED strip
 pixels = neopixel.NeoPixel(LED_PIN, LED_COUNT, brightness = LED_BRIGHTNESS, pixel_order = LED_ORDER, auto_write = False)
@@ -77,7 +77,7 @@ for metar in root.iter('METAR'):
 	conditionDict[stationId] = { "flightCategory" : flightCategory, "windSpeed" : int(windSpeed), "windGust": windGust }
 
 # Setting LED colors based on weather conditions
-looplimit = BLINK_TOTALTIME_SECONDS / BLINK_SPEED
+looplimit = int(round(BLINK_TOTALTIME_SECONDS / BLINK_SPEED))
 blinkCycle = True
 while True:
 	i = 0
