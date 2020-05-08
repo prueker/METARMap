@@ -14,7 +14,7 @@ I've created detailed instructions about the setup and parts used here: https://
 * Update packages 
 	* sudo apt-get update
 	* sudo apt-get upgrade
-* Copy the **metar.py**, **airports**, **startup.sh**, **refresh.sh** scripts into the pi home directory
+* Copy the **metar.py**, **airports**, **refresh.sh** and **lightsoff.sh** scripts into the pi home directory
 * Install python3 and pip3 if not already installed
 	* sudo apt-get install python3
 	* sudo apt-get install python3-pip
