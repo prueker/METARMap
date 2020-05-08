@@ -33,7 +33,7 @@ I've created detailed instructions about the setup and parts used here: https://
 
 ## Additional Wind condition blinking/fading functionality
 I recently expanded the script to also take wind condition into account and if the wind exceeds a certain threshold, or if it is gusting, make the LED for that airport either blink on/off or to fade between  two shades of the current flight category color.
-If you want to use this extra functionality, then instead of using the **refresh.sh** and **metar.py** use the alternative **blink.sh** and **blink.py** files.
+If you want to use this extra functionality, then inside the **metar.py** file set the **ACTIVATE_WINDCONDITION_ANIMATION** parameter to **True** files.
 * There are a few additional parameters in the blink.py script you can configure to your liking:
 	* FADE_INSTEAD_OF_BLINK - set this to either **True** or **False** to switch between fading or blinking for the LEDs when conditions are windy
 	* WIND_BLINK_THRESHOLD - in Knots for normal wind speeds currently at the airport
