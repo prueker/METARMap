@@ -14,7 +14,7 @@ I've created detailed instructions about the setup and parts used here: https://
 * Update packages 
 	* sudo apt-get update
 	* sudo apt-get upgrade
-* Copy the **metar.py**, **airports**, **refresh.sh** and **lightsoff.sh** scripts into the pi home directory
+* Copy the **metar.py**, **pixelsoff.py**, **airports**, **refresh.sh** and **lightsoff.sh** scripts into the pi home directory
 * Install python3 and pip3 if not already installed
 	* sudo apt-get install python3
 	* sudo apt-get install python3-pip
@@ -24,7 +24,7 @@ I've created detailed instructions about the setup and parts used here: https://
 * Test the script by running it directly (it needs to run with root permissions to access the GPIO pins):
 	* sudo python3 metar.py
 * Make appropriate changes to the **airports** file for the airports you want to use and change the **metar.py** script to the correct **LED_COUNT** (including NULLs if you have LEDS in between airports that will stay off) and **LED_BRIGHTNESS** if you want to change it
-* To run the script automatically when you power the Raspberry Pi, you will need to grant permissions to execute the **refresh.sh** and **lightsoff.sh** script and read permissions to the **airports** and **metar.py** script using chmod:
+* To run the script automatically when you power the Raspberry Pi, you will need to grant permissions to execute the **refresh.sh** and **lightsoff.sh** script and read permissions to the **airports**, **metar.py** and **pixelsoff.py** script using chmod:
 	* **chmod +x filename** will grant execute permissions
 	* **chmod +r filename** will grant write permissions
 * To have the script start up automatically and refresh in regular intervals, use crontab and set the appropriate interval. For an example you can refer to the crontab file in the GitHub repo (make sure you grant the file execute permissions beforehand to the refresh.sh and lightsoff.sh file). To edit your crontab type: **crontab -e**, after you are done with the edits, exit out by pressing ctrl+x and confirm the write operation
