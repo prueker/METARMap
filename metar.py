@@ -6,9 +6,6 @@ import board
 import neopixel
 import time
 
-def shouldBlink(wSpeed, wGust, onBlinkCycle):
-	return True if ((wSpeed > WIND_BLINK_THRESHOLD or wGust == True) and onBlinkCycle == True) else False
-
 # NeoPixel LED Configuration
 LED_COUNT			= 30				# Number of LED pixels.
 LED_PIN				= board.D18			# GPIO pin connected to the pixels (18 is PCM).
@@ -26,7 +23,7 @@ COLOR_LIFR_FADE		= (0,75,75)			# Magenta Fade for wind
 COLOR_CLEAR		= (0,0,0)			# Clear
 
 # Do you want the METARMap to be static to just show flight conditions, or do you also want blinking/fading based on current wind conditions
-ACTIVATE_WINDCONDITION_ANIMATION = True			# Set this to False for Static or True for animated wind conditions
+ACTIVATE_WINDCONDITION_ANIMATION = False			# Set this to False for Static or True for animated wind conditions
 
 # Fade instead of blink
 FADE_INSTEAD_OF_BLINK	= True				# Set to False if you want blinking
@@ -88,12 +85,12 @@ while True:
 		if airportcode == "NULL":
 			i += 1
 			continue
-		
+
 		color = COLOR_CLEAR
 		conditions = conditionDict.get(airportcode, None)
-		
-		if  conditions != None:
-			windy = shouldBlink(conditions["windSpeed"], conditions["windGust"], blinkCycle)
+
+		if conditions != None:
+			windy = True if ((conditions["windSpeed"] > WIND_BLINK_THRESHOLD or conditions["windGust"] == True) and blinkCycle == True) else False
 			if conditions["flightCategory"] == "VFR":
 				color = COLOR_VFR if not windy else (COLOR_VFR_FADE if FADE_INSTEAD_OF_BLINK else COLOR_CLEAR)
 			elif conditions["flightCategory"] == "MVFR":
@@ -111,7 +108,7 @@ while True:
 
 	# Update actual LEDs all at once
 	pixels.show()
-	
+
 	#looplimit
 	time.sleep(BLINK_SPEED)
 	blinkCycle = False if blinkCycle else True
