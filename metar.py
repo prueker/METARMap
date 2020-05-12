@@ -78,7 +78,7 @@ for metar in root.iter('METAR'):
 # Setting LED colors based on weather conditions
 looplimit = int(round(BLINK_TOTALTIME_SECONDS / BLINK_SPEED)) if ACTIVATE_WINDCONDITION_ANIMATION else 1
 blinkCycle = False
-while True:
+while looplimit > 0:
 	i = 0
 	for airportcode in airports:
 		# Skip NULL entries
@@ -113,8 +113,6 @@ while True:
 	time.sleep(BLINK_SPEED)
 	blinkCycle = False if blinkCycle else True
 	looplimit -= 1
-	if looplimit == 0:
-		break
 
 print()
 print("Done")
