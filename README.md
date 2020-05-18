@@ -33,10 +33,20 @@ I've created detailed instructions about the setup and parts used here: https://
 
 ## Additional Wind condition blinking/fading functionality
 I recently expanded the script to also take wind condition into account and if the wind exceeds a certain threshold, or if it is gusting, make the LED for that airport either blink on/off or to fade between  two shades of the current flight category color.
-If you want to use this extra functionality, then inside the **metar.py** file set the **ACTIVATE_WINDCONDITION_ANIMATION** parameter to **True** files.
+
+If you want to use this extra functionality, then inside the **metar.py** file set the **ACTIVATE_WINDCONDITION_ANIMATION** parameter to **True**.
 * There are a few additional parameters in the script you can configure to your liking:
 	* FADE_INSTEAD_OF_BLINK - set this to either **True** or **False** to switch between fading or blinking for the LEDs when conditions are windy
 	* WIND_BLINK_THRESHOLD - in Knots for normal wind speeds currently at the airport
 	* ALWAYS_BLINK_FOR_GUSTS - If you always want the blinking/fading to happen for gusts, regardless of the wind speed
+	* BLINKS_SPEED - How fast the blinking happens, I found 1 second to be a happy medium so it's not too busy, but you can also make it faster, for example every half a second by using 0.5
+	* BLINK_TOTALTIME_SECONDS = How long do you want the script to run. I have this set to 300 seconds as I have my crontab setup to re-run the script every 5 minutes to get the latest weather information
+	
+## Additional Lightning in the vicinity blinking functionality
+After the recent addition for wind condition animation, I got another request from someone if I could add a white blinking animation to represent lightning in the area.
+Please note that due to the nature of the METAR system, this means that the METAR for this airport reports that there is Lightning somewhere in the vicinity of the airport, but not necessarily right at the airport.
+
+If you want to use this extra functionality, then inside the **metar.py** file set the **ACTIVATE_LIGHTNING_ANIMATION** parameter to **True**.
+* This shares two configuration parameters together with the wind animation that you can modify as you like:
 	* BLINKS_SPEED - How fast the blinking happens, I found 1 second to be a happy medium so it's not too busy, but you can also make it faster, for example every half a second by using 0.5
 	* BLINK_TOTALTIME_SECONDS = How long do you want the script to run. I have this set to 300 seconds as I have my crontab setup to re-run the script every 5 minutes to get the latest weather information
