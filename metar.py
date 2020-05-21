@@ -68,21 +68,17 @@ for metar in root.iter('METAR'):
 		continue
 	flightCategory = metar.find('flight_category').text
 	windGust = False
-	if metar.find('wind_gust_kt') is None:
-		windGust = False
-	else:
+	windSpeed = 0
+	lightning = False
+	if metar.find('wind_gust_kt') is not None:
 		windGust = (True if (ALWAYS_BLINK_FOR_GUSTS or int(metar.find('wind_gust_kt').text) > WIND_BLINK_THRESHOLD) else False)
-	if metar.find('wind_speed_kt') is None:
-		print("Missing Wind speed, skipping.")
-		continue
-	windSpeed = metar.find('wind_speed_kt').text
-	if metar.find('raw_text') is None:
-		print("No Raw text found")
-		continue
-	rawText = metar.find('raw_text').text
-	lightning = False if rawText.find('LTG') == -1 else True
-	print(stationId + ":" + flightCategory + ":" + windSpeed + ":" + str(windGust) + ":" + str(lightning))
-	conditionDict[stationId] = { "flightCategory" : flightCategory, "windSpeed" : int(windSpeed), "windGust": windGust, "lightning": lightning }
+	if metar.find('wind_speed_kt') is not None:
+		windSpeed = int(metar.find('wind_speed_kt').text)
+	if metar.find('raw_text') is not None:
+		rawText = metar.find('raw_text').text
+		lightning = False if rawText.find('LTG') == -1 else True
+	print(stationId + ":" + flightCategory + ":" + str(windSpeed) + ":" + str(windGust) + ":" + str(lightning))
+	conditionDict[stationId] = { "flightCategory" : flightCategory, "windSpeed" : windSpeed, "windGust": windGust, "lightning": lightning }
 
 # Setting LED colors based on weather conditions
 looplimit = int(round(BLINK_TOTALTIME_SECONDS / BLINK_SPEED)) if (ACTIVATE_WINDCONDITION_ANIMATION or ACTIVATE_LIGHTNING_ANIMATION) else 1
