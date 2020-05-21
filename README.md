@@ -5,7 +5,7 @@ Raspberry Pi project to visualize flight conditions on a map using WS8211 LEDs a
 I've created detailed instructions about the setup and parts used here: https://slingtsi.rueker.com/making-a-led-powered-metar-map-for-your-wall/
 
 ## Software Setup
-* Install [Raspbian Stretch Lite](https://www.raspberrypi.org/downloads/raspbian/) on SD card
+* Install [Raspbian Buster Lite](https://www.raspberrypi.org/downloads/raspbian/) on SD card
 * [Enable Wi-Fi and SSH](https://medium.com/@danidudas/install-raspbian-jessie-lite-and-setup-wi-fi-without-access-to-command-line-or-using-the-network-97f065af722e)
 * Install SD card and power up Raspberry Pi
 * SSH (using [Putty](https://www.putty.org) or some other SSH tool) into the Raspberry and configure password and timezones
