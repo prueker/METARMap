@@ -113,7 +113,6 @@ while looplimit > 0:
 
 		print("Setting LED " + str(i) + " for " + airportcode + " to " + ("lightning " if lightningConditions else "") + ("windy " if windy else "") + displayColorOn + (conditions["flightCategory"] if conditions != None else "None") + displayColorOff + " " + str(color))
 
-		print("Setting LED " + str(i) + " for " + airportcode + " to " + ("lightning " if lightningConditions else "") + ("windy " if windy else "") + (conditions["flightCategory"] if conditions != None else "None") + " " + str(color))
 		pixels[i] = color
 		i += 1
 
