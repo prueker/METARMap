@@ -107,6 +107,12 @@ while looplimit > 0:
 				color = COLOR_LIFR if not (windy or lightningConditions) else COLOR_LIGHTNING if lightningConditions else (COLOR_LIFR_FADE if FADE_INSTEAD_OF_BLINK else COLOR_CLEAR) if windy else COLOR_CLEAR
 			else:
 				color = COLOR_CLEAR
+
+		displayColorOn = "\x1B[38;2;" + str(color[1]) + ";" + str(color[0]) + ";" + str(color[2]) +"m"
+		displayColorOff = "\x1B[0m"
+
+		print("Setting LED " + str(i) + " for " + airportcode + " to " + ("lightning " if lightningConditions else "") + ("windy " if windy else "") + displayColorOn + (conditions["flightCategory"] if conditions != None else "None") + displayColorOff + " " + str(color))
+
 		print("Setting LED " + str(i) + " for " + airportcode + " to " + ("lightning " if lightningConditions else "") + ("windy " if windy else "") + (conditions["flightCategory"] if conditions != None else "None") + " " + str(color))
 		pixels[i] = color
 		i += 1
