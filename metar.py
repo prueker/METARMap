@@ -7,7 +7,7 @@ import neopixel
 import time
 
 # NeoPixel LED Configuration
-LED_COUNT			= 30				# Number of LED pixels.
+LED_COUNT			= 50				# Number of LED pixels.
 LED_PIN				= board.D18			# GPIO pin connected to the pixels (18 is PCM).
 LED_BRIGHTNESS			= 0.5				# Float from 0.0 (min) to 1.0 (max)
 LED_ORDER			= neopixel.GRB			# Strip type and colour ordering
@@ -93,6 +93,8 @@ while looplimit > 0:
 
 		color = COLOR_CLEAR
 		conditions = conditionDict.get(airportcode, None)
+		windy = False
+		lightningConditions = False
 
 		if conditions != None:
 			windy = True if (ACTIVATE_WINDCONDITION_ANIMATION and windCycle == True and (conditions["windSpeed"] > WIND_BLINK_THRESHOLD or conditions["windGust"] == True)) else False
@@ -108,8 +110,7 @@ while looplimit > 0:
 			else:
 				color = COLOR_CLEAR
 
-			print("Setting LED " + str(i) + " for " + airportcode + " to " + ("lightning " if lightningConditions else "") + ("windy " if windy else "") + (conditions["flightCategory"] if conditions != None else "None") + " " + str(color))
-
+		print("Setting LED " + str(i) + " for " + airportcode + " to " + ("lightning " if lightningConditions else "") + ("windy " if windy else "") + (conditions["flightCategory"] if conditions != None else "None") + " " + str(color))
 		pixels[i] = color
 		i += 1
 
