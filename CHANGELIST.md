@@ -1,6 +1,6 @@
 ### 1.2.3 (2020-11-19)
 - Aviationweather.gov has stopped accepting the default user agent for urllib
-Explicitly Setting it to standard web browser compatible user agent
+- - Explicitly Setting it to standard web browser compatible user agent
 
 ### 1.2.2 (2020-06-11)
 - Small fix to ensure correct variable scoping
