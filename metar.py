@@ -6,6 +6,8 @@ import board
 import neopixel
 import time
 
+# metar.py script iteration 1.2.3
+
 # NeoPixel LED Configuration
 LED_COUNT			= 50				# Number of LED pixels.
 LED_PIN				= board.D18			# GPIO pin connected to the pixels (18 is PCM).
