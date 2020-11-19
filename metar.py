@@ -56,7 +56,8 @@ airports = [x.strip() for x in airports]
 url = "https://www.aviationweather.gov/adds/dataserver_current/httpparam?dataSource=metars&requestType=retrieve&format=xml&hoursBeforeNow=5&mostRecentForEachStation=true&stationString=" + ",".join([item for item in airports if item != "NULL"])
 print(url)
 
-content = urllib.request.urlopen(url).read()
+req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36 Edg/86.0.622.69'})
+content = urllib.request.urlopen(req).read()
 
 # Retrieve flying conditions from the service response and store in a dictionary for each airport
 root = ET.fromstring(content)
