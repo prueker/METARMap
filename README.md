@@ -50,3 +50,6 @@ If you want to use this extra functionality, then inside the **metar.py** file s
 * This shares two configuration parameters together with the wind animation that you can modify as you like:
 	* BLINKS_SPEED - How fast the blinking happens, I found 1 second to be a happy medium so it's not too busy, but you can also make it faster, for example every half a second by using 0.5
 	* BLINK_TOTALTIME_SECONDS = How long do you want the script to run. I have this set to 300 seconds as I have my crontab setup to re-run the script every 5 minutes to get the latest weather information
+	
+## Changelist
+To see a list of changes to the metar script over time, refer to [CHANGELIST.md](CHANGELIST.md)
