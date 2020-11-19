@@ -14,7 +14,7 @@ I've created detailed instructions about the setup and parts used here: https://
 * Update packages 
 	* `sudo apt-get update`
 	* `sudo apt-get upgrade`
-* Copy the **metar.py**, **pixelsoff.py**, **airports**, **refresh.sh** and **lightsoff.sh** scripts into the pi home directory
+* Copy the **metar.py**, **pixelsoff.py**, **airports**, **refresh.sh** and **lightsoff.sh** scripts into the pi home directory (/home/pi)
 * Install python3 and pip3 if not already installed
 	* `sudo apt-get install python3`
 	* `sudo apt-get install python3-pip`
@@ -23,7 +23,7 @@ I've created detailed instructions about the setup and parts used here: https://
 * Attach WS8211 LEDs to Raspberry Pi, if you are using just a few, you can connect the directly, otherwise you may need to also attach external power to the LEDs. For my purpose with 22 powered LEDs it was fine to just connect it directly. You can find [more details about wiring here](https://learn.adafruit.com/neopixels-on-raspberry-pi/raspberry-pi-wiring).
 * Test the script by running it directly (it needs to run with root permissions to access the GPIO pins):
 	* `sudo python3 metar.py`
-* Make appropriate changes to the **airports** file for the airports you want to use and change the **metar.py** script to the correct **LED_COUNT** (including NULLs if you have LEDS in between airports that will stay off) and **LED_BRIGHTNESS** if you want to change it
+* Make appropriate changes to the **airports** file for the airports you want to use and change the **metar.py** and **pixelsoff.py** script to the correct **LED_COUNT** (including NULLs if you have LEDS in between airports that will stay off) and **LED_BRIGHTNESS** if you want to change it
 * To run the script automatically when you power the Raspberry Pi, you will need to grant permissions to execute the **refresh.sh** and **lightsoff.sh** script and read permissions to the **airports**, **metar.py** and **pixelsoff.py** script using chmod:
 	* `chmod +x filename` will grant execute permissions
 	* `chmod +r filename` will grant write permissions
