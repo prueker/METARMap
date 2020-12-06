@@ -16,6 +16,10 @@ BLINK_RATE = 1
 BLINK_WIND_THRESHOLD = 12
 BLINK_GUST_THRESHOLD = 15
 
+ANIMATE_BLINK_FOR_WIND = True
+ANIMATE_BLINK_FOR_GUST = True
+ANIMATE_BLINK_FOR_LIGHTNING = True
+
 VFR = 'VFR'
 MVFR = 'MVFR'
 IFR = 'IFR'
@@ -103,8 +107,9 @@ def changeLightsBasedOnMetar(airports, metarDict):
         lightning = metar.get('lightning', False)
         color = getColorForFlightCategory(flightCategory)
         pixels[i] = color
-        shouldBlink = windSpeed > BLINK_WIND_THRESHOLD or windGust > BLINK_GUST_THRESHOLD
         print('SETTING', airportcode, flightCategory, windSpeed, windGust, lightning)
+        shouldBlink = ((windSpeed > BLINK_WIND_THRESHOLD and ANIMATE_BLINK_FOR_WIND)
+            or (windGust > BLINK_GUST_THRESHOLD and ANIMATE_BLINK_FOR_GUST))
         if (shouldBlink):
             blink(i, color)
         i += 1
@@ -129,7 +134,8 @@ def changeLightsBasedOnTaf(airports, forecastDict, forecastTime):
             lightning = forecast.get('lightning', False)
             color = getColorForFlightCategory(flightCategory)
             pixels[i] = color
-            shouldBlink = windSpeed > BLINK_WIND_THRESHOLD or windGust > BLINK_GUST_THRESHOLD
+            shouldBlink = (windSpeed > BLINK_WIND_THRESHOLD and ANIMATE_BLINK_FOR_WIND)
+                or (windGust > BLINK_GUST_THRESHOLD and ANIMATE_BLINK_FOR_GUST)
             print('SETTING', airportcode, flightCategory, windSpeed, windGust, lightning)
             if (shouldBlink):
                 blink(i, color)
