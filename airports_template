@@ -1,0 +1,15 @@
+#### TEMPLATE ####
+#
+# To setup your airports file:
+#   - Duplicate this template file
+#   - Rename to `airports` (just remove the underscore and everything after)
+#   - Add your list of airports below
+#   - Delete all of these comments. Make sure the first line is an airport, not empty
+
+KHXM
+NULL
+KSHN
+KOLM
+KGRF
+...etc
+\ No newline at end of file
