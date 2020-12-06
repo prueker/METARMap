@@ -1,17 +1,27 @@
 # METARMap
 Raspberry Pi project to visualize flight conditions on a map using WS8211 LEDs addressed via NeoPixel
 
+## Changelist
+To see a list of changes to the metar script over time, refer to [CHANGELIST.md](CHANGELIST.md)
+
+## TAF Functionality
+
+**!! READ THIS if you want to utilize forecasting !!**
+
+Forecasting ability (based of TAFs) has been added on 12/06/2020. Utilizing this feature requires running a totally separate script than what's listed below. The setup is also quite different, so a new instructions file was added, [TAF_README](TAF_README.md). If you'd like to utilize that, you can ignore everything here and follow those instructions instead. Anything common to both setups (such as package installations) will be listed there as well.
+
 ## Detailed instructions
 I've created detailed instructions about the setup and parts used here: https://slingtsi.rueker.com/making-a-led-powered-metar-map-for-your-wall/
 
 ## Software Setup
 * Install [Raspbian Buster Lite](https://www.raspberrypi.org/downloads/raspbian/) on SD card
+  * You can also use the [Raspberry Pi Imager](https://www.raspberrypi.org/software/) which downloads and burns the image for you
 * [Enable Wi-Fi and SSH](https://medium.com/@danidudas/install-raspbian-jessie-lite-and-setup-wi-fi-without-access-to-command-line-or-using-the-network-97f065af722e)
 * Install SD card and power up Raspberry Pi
 * SSH (using [Putty](https://www.putty.org) or some other SSH tool) into the Raspberry and configure password and timezones
 	* `passwd`
 	* `sudo raspi-config`
-* Update packages 
+* Update packages
 	* `sudo apt-get update`
 	* `sudo apt-get upgrade`
 * Copy the **metar.py**, **pixelsoff.py**, **airports**, **refresh.sh** and **lightsoff.sh** scripts into the pi home directory (/home/pi)
@@ -41,7 +51,7 @@ If you want to use this extra functionality, then inside the **metar.py** file s
 	* ALWAYS_BLINK_FOR_GUSTS - If you always want the blinking/fading to happen for gusts, regardless of the wind speed
 	* BLINKS_SPEED - How fast the blinking happens, I found 1 second to be a happy medium so it's not too busy, but you can also make it faster, for example every half a second by using 0.5
 	* BLINK_TOTALTIME_SECONDS = How long do you want the script to run. I have this set to 300 seconds as I have my crontab setup to re-run the script every 5 minutes to get the latest weather information
-	
+
 ## Additional Lightning in the vicinity blinking functionality
 After the recent addition for wind condition animation, I got another request from someone if I could add a white blinking animation to represent lightning in the area.
 Please note that due to the nature of the METAR system, this means that the METAR for this airport reports that there is Lightning somewhere in the vicinity of the airport, but not necessarily right at the airport.
@@ -50,6 +60,3 @@ If you want to use this extra functionality, then inside the **metar.py** file s
 * This shares two configuration parameters together with the wind animation that you can modify as you like:
 	* BLINKS_SPEED - How fast the blinking happens, I found 1 second to be a happy medium so it's not too busy, but you can also make it faster, for example every half a second by using 0.5
 	* BLINK_TOTALTIME_SECONDS = How long do you want the script to run. I have this set to 300 seconds as I have my crontab setup to re-run the script every 5 minutes to get the latest weather information
-	
-## Changelist
-To see a list of changes to the metar script over time, refer to [CHANGELIST.md](CHANGELIST.md)
