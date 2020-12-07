@@ -1,3 +1,15 @@
+### 1.3.0 (2020-12-06)
+
+**Major update**
+
+Adding forecasting functionality with TAFs. To utilize, run the alternative `loop.py` script instead of `metar.py`. Requires additional hardware on the Raspberry Pi (see README).
+
+No changes affect the existing `metar.py` script functionality
+- New script, `loop.py`, that runs infinitely
+- New lib, `lib/forecast.py` to compute flight category (+ more) by time based on TAF
+- New lib, `lib/display.py` to update the lights and accompanying OLED screen (only used by `loop.py`)
+- New example scripts in `examples` to help initial development. The metar and taf examples can be run outside of a Raspberry Pi environment
+
 ### 1.2.3 (2020-11-19)
 - Aviationweather.gov has stopped accepting the default user agent for urllib
 - - Explicitly Setting it to standard web browser compatible user agent
