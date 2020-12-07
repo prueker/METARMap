@@ -101,6 +101,10 @@ def changeLightsBasedOnMetar(airports, metarDict):
             i += 1
             continue
         metar = metarDict.get(airportcode, 'No')
+        if (metar == 'No'):
+            pixels[i] = COLOR_CLEAR
+            i += 1
+            continue
         flightCategory = metar.get('flightCategory')
         windSpeed = metar.get('windSpeed', 0)
         windGust = metar.get('windGust', 0)
@@ -125,22 +129,23 @@ def changeLightsBasedOnTaf(airports, forecastDict, forecastTime):
             i += 1
             continue
         forecasts = forecastDict.get(airportcode,"No")
-        if forecasts != "No":
-            forecastPeriod = findForecastForTime(forecastTime, forecasts)
-            forecast = forecastPeriod.get('forecast', {})
-            flightCategory = forecastPeriod.get('flightCategory')
-            windSpeed = forecast.get('windSpeed', 0)
-            windGust = forecast.get('windGust', 0)
-            lightning = forecast.get('lightning', False)
-            color = getColorForFlightCategory(flightCategory)
-            pixels[i] = color
-            shouldBlink = (windSpeed > BLINK_WIND_THRESHOLD and ANIMATE_BLINK_FOR_WIND)
-                or (windGust > BLINK_GUST_THRESHOLD and ANIMATE_BLINK_FOR_GUST)
-            print('SETTING', airportcode, flightCategory, windSpeed, windGust, lightning)
-            if (shouldBlink):
-                blink(i, color)
-        else:
-             pixels[i] = COLOR_CLEAR
+        if forecasts == "No":
+            pixels[i] = COLOR_CLEAR
+            i += 1
+            continue
+        forecastPeriod = findForecastForTime(forecastTime, forecasts)
+        forecast = forecastPeriod.get('forecast', {})
+        flightCategory = forecastPeriod.get('flightCategory')
+        windSpeed = forecast.get('windSpeed', 0)
+        windGust = forecast.get('windGust', 0)
+        lightning = forecast.get('lightning', False)
+        color = getColorForFlightCategory(flightCategory)
+        pixels[i] = color
+        shouldBlink = ((windSpeed > BLINK_WIND_THRESHOLD and ANIMATE_BLINK_FOR_WIND)
+            or (windGust > BLINK_GUST_THRESHOLD and ANIMATE_BLINK_FOR_GUST))
+        print('SETTING', airportcode, flightCategory, windSpeed, windGust, lightning)
+        if (shouldBlink):
+            blink(i, color)
         i += 1
     pixels.show()
 
