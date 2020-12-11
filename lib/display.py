@@ -10,7 +10,7 @@ TIME_ZONE = 'US/Eastern'
 
 LED_PIN         = board.D18             # GPIO pin connected to the pixels (18 is PCM).
 LED_COUNT       = 50                    # Number of LED pixels.
-LED_BRIGHTNESS  = 0.1                   # Float from 0.0 (min) to 1.0 (max)
+LED_BRIGHTNESS  = 0.3                   # Float from 0.0 (min) to 1.0 (max)
 
 BLINK_RATE = 1
 BLINK_WIND_THRESHOLD = 12
