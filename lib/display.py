@@ -93,7 +93,6 @@ def cancelAllBlinks():
 
 def changeLightsBasedOnMetar(airports, metarDict):
     # TODO: IMPLEMENT AND TEST BLINKING FOR LIGHTNING (can't find a TAF with lightning yet)
-    print('OBSERVING')
     cancelAllBlinks()
     i = 0
     for airportcode in airports:
@@ -111,7 +110,6 @@ def changeLightsBasedOnMetar(airports, metarDict):
         lightning = metar.get('lightning', False)
         color = getColorForFlightCategory(flightCategory)
         pixels[i] = color
-        print('SETTING', airportcode, flightCategory, windSpeed, windGust, lightning)
         shouldBlink = ((windSpeed > BLINK_WIND_THRESHOLD and ANIMATE_BLINK_FOR_WIND)
             or (windGust > BLINK_GUST_THRESHOLD and ANIMATE_BLINK_FOR_GUST))
         if (shouldBlink):
@@ -121,7 +119,6 @@ def changeLightsBasedOnMetar(airports, metarDict):
 
 def changeLightsBasedOnTaf(airports, forecastDict, forecastTime):
     # TODO: IMPLEMENT AND TEST BLINKING FOR LIGHTNING (can't find a TAF with lightning yet)
-    print('FORECASTING', forecastTime)
     cancelAllBlinks()
     i = 0
     for airportcode in airports:
@@ -143,7 +140,6 @@ def changeLightsBasedOnTaf(airports, forecastDict, forecastTime):
         pixels[i] = color
         shouldBlink = ((windSpeed > BLINK_WIND_THRESHOLD and ANIMATE_BLINK_FOR_WIND)
             or (windGust > BLINK_GUST_THRESHOLD and ANIMATE_BLINK_FOR_GUST))
-        print('SETTING', airportcode, flightCategory, windSpeed, windGust, lightning)
         if (shouldBlink):
             blink(i, color)
         i += 1

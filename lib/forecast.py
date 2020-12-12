@@ -103,10 +103,8 @@ def findFlightCategory(forecast):
     ceiling = int(forecast["ceiling"] or THRESH_MVFR_CEILING)
     visibility = float(forecast["visibility"])
     if ceiling is None:
-        print("Missing ceiling, skipping")
         return
     if visibility is None:
-        print("Missing visibility, skipping")
         return
 
     ceilingCategory = VFR
