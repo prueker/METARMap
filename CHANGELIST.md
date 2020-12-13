@@ -1,3 +1,8 @@
+### 1.3.0 (2020-11-19)
+- Adding functionality to dim the lights between certain times of day
+  - Either as a fixed time of day
+  - or using local sunrise/sunset times
+
 ### 1.2.3 (2020-11-19)
 - Aviationweather.gov has stopped accepting the default user agent for urllib
 - - Explicitly Setting it to standard web browser compatible user agent
