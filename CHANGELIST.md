@@ -1,4 +1,4 @@
-### 1.3.0 (2020-11-19)
+### 1.3.0 (2020-12-12)
 - Adding functionality to dim the lights between certain times of day
   - Either as a fixed time of day
   - or using local sunrise/sunset times

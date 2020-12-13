@@ -64,7 +64,7 @@ For time timings of the dimming there are two options:
 * Dimming based on local sunrise/sunset:
 	* For this to work, you need to install an additional library, run:
 		* `sudo pip3 install astral`
-	* `USE_SUNRISE_SUNSET` - Set this to True to use the dimming based on sunrise and sunset
+	* `USE_SUNRISE_SUNSET` - Set this to **True** to use the dimming based on sunrise and sunset
 	* `LOCATION` - set this to the city you want to use for sunset/sunrise timings
 		* Use the closest city from the list of supported cities from https://astral.readthedocs.io/en/latest/#cities
 
