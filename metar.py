@@ -5,14 +5,19 @@ import xml.etree.ElementTree as ET
 import board
 import neopixel
 import time
+import datetime
+try:
+	import astral
+except ImportError:
+	astral = None
 
-# metar.py script iteration 1.2.3
+# metar.py script iteration 1.3.0
 
 # NeoPixel LED Configuration
-LED_COUNT			= 50				# Number of LED pixels.
-LED_PIN				= board.D18			# GPIO pin connected to the pixels (18 is PCM).
-LED_BRIGHTNESS			= 0.5				# Float from 0.0 (min) to 1.0 (max)
-LED_ORDER			= neopixel.GRB			# Strip type and colour ordering
+LED_COUNT			= 50			# Number of LED pixels.
+LED_PIN				= board.D18		# GPIO pin connected to the pixels (18 is PCM).
+LED_BRIGHTNESS			= 0.5			# Float from 0.0 (min) to 1.0 (max)
+LED_ORDER			= neopixel.GRB		# Strip type and colour ordering
 
 COLOR_VFR		= (255,0,0)			# Green
 COLOR_VFR_FADE		= (125,0,0)			# Green Fade for wind
@@ -25,28 +30,55 @@ COLOR_LIFR_FADE		= (0,75,75)			# Magenta Fade for wind
 COLOR_CLEAR		= (0,0,0)			# Clear
 COLOR_LIGHTNING		= (255,255,255)			# White
 
+# ----- Blink/Fade functionality for Wind and Lightning -----
 # Do you want the METARMap to be static to just show flight conditions, or do you also want blinking/fading based on current wind conditions
 ACTIVATE_WINDCONDITION_ANIMATION = False		# Set this to False for Static or True for animated wind conditions
-
 #Do you want the Map to Flash white for lightning in the area
 ACTIVATE_LIGHTNING_ANIMATION = False			# Set this to False for Static or True for animated Lightning
-
 # Fade instead of blink
 FADE_INSTEAD_OF_BLINK	= True				# Set to False if you want blinking
-
 # Blinking Windspeed Threshold
 WIND_BLINK_THRESHOLD	= 15				# Knots of windspeed
 ALWAYS_BLINK_FOR_GUSTS	= False				# Always animate for Gusts (regardless of speeds)
-
 # Blinking Speed in seconds
 BLINK_SPEED		= 1.0				# Float in seconds, e.g. 0.5 for half a second
-
 # Total blinking time in seconds.
 # For example set this to 300 to keep blinking for 5 minutes if you plan to run the script every 5 minutes to fetch the updated weather
 BLINK_TOTALTIME_SECONDS	= 300
 
+# ----- Daytime dimming of LEDs based on time of day or Sunset/Sunrise -----
+ACTIVATE_DAYTIME_DIMMING = False				# Set to True if you want to dim the map after a certain time of day
+LED_BRIGHTNESS_DIM	= 0.1				# Float from 0.0 (min) to 1.0 (max)
+
+BRIGHT_TIME_START = datetime.time(7,0)			# Time of day to run at LED_BRIGHTNESS in hours and minutes
+DIM_TIME_START =	datetime.time(19,0)		# Time of day to run at LED_BRIGHTNESS_DIM in hours and minutes
+
+USE_SUNRISE_SUNSET = False				# Set to True if instead of fixed times for bright/dimming, you want to use local sunrise/sunset
+LOCATION = "Seattle"					# Nearby city for Sunset/Sunrise timing, refer to https://astral.readthedocs.io/en/latest/#cities for list of cities supported
+
+# ---------------------------------------------------------------------------
+# ------------END OF CONFIGURATION-------------------------------------------
+# ---------------------------------------------------------------------------
+
+print("Running metar.py at " + datetime.datetime.now().strftime('%d/%m/%Y %H:%M'))
+
+# Figure out sunrise/sunset times if astral is being used
+if astral is not None and USE_SUNRISE_SUNSET:
+	ast = astral.Astral()
+	try:
+		city = ast[LOCATION]
+	except KeyError:
+		print("Location not recognized, please check list of supported cities and reconfigure")
+	else:
+		print(city)
+		sun = city.sun(date = datetime.datetime.now().date(), local = True)
+		BRIGHT_TIME_START = sun['sunrise'].time()
+		DIM_TIME_START = sun['sunset'].time()
+		print("Sunrise:" + BRIGHT_TIME_START.strftime('%H:%M') + " Sunset:" + DIM_TIME_START.strftime('%H:%M'))
+
 # Initialize the LED strip
-pixels = neopixel.NeoPixel(LED_PIN, LED_COUNT, brightness = LED_BRIGHTNESS, pixel_order = LED_ORDER, auto_write = False)
+bright = BRIGHT_TIME_START < datetime.datetime.now().time() < DIM_TIME_START
+pixels = neopixel.NeoPixel(LED_PIN, LED_COUNT, brightness = LED_BRIGHTNESS_DIM if (ACTIVATE_DAYTIME_DIMMING and bright == False) else LED_BRIGHTNESS, pixel_order = LED_ORDER, auto_write = False)
 
 # Read the airports file to retrieve list of airports and use as order for LEDs
 with open("/home/pi/airports") as f:
@@ -57,7 +89,6 @@ airports = [x.strip() for x in airports]
 # Details about parameters can be found here: https://www.aviationweather.gov/dataserver/example?datatype=metar
 url = "https://www.aviationweather.gov/adds/dataserver_current/httpparam?dataSource=metars&requestType=retrieve&format=xml&hoursBeforeNow=5&mostRecentForEachStation=true&stationString=" + ",".join([item for item in airports if item != "NULL"])
 print(url)
-
 req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36 Edg/86.0.622.69'})
 content = urllib.request.urlopen(req).read()
 
