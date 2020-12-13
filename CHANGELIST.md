@@ -1,3 +1,7 @@
+### 1.3.1 (2020-12-13)
+- Astral for dimming using sunrise/sunset has a breaking change starting with python 3.6
+- - Made a fix to support both older raspberry pi running python 3.5 with Astral 1.10.1 as well as newer Raspberry images running Astral 2.2
+
 ### 1.3.0 (2020-12-12)
 - Adding functionality to dim the lights between certain times of day
   - Either as a fixed time of day
