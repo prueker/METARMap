@@ -1,3 +1,6 @@
+### 1.4.1 (2020-12-16)
+- Small bugfix for CLR skycondition (which doesn't have a cloudbase)
+
 ### 1.4.0 (2020-12-15)
 - Adding functionality to display METAR information for the airports in use on a small external display
 - - Code is written for a 128 x 64 pixel external OLED display using the SSD1306 chipset
