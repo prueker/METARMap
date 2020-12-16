@@ -64,7 +64,7 @@ def outputMetar(disp, station, condition):
 	xOff = 0
 	NewLine = False
 	for skyIter in condition["skyConditions"]:
-		draw.text((x + xOff, top + yOff), skyIter["cover"] + "@" + str(skyIter["cloudBaseFt"]), font=fontSmall, fill=255)
+		draw.text((x + xOff, top + yOff), skyIter["cover"] + ("@" + str(skyIter["cloudBaseFt"]) if skyIter["cloudBaseFt"] > 0 else ""), font=fontSmall, fill=255)
 		if NewLine:
 			yOff += 10
 			xOff = 0
