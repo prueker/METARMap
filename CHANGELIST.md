@@ -1,3 +1,7 @@
+### 1.4.0 (2020-12-15)
+- Adding functionality to display METAR information for the airports in use on a small external display
+- - Code is written for a 128 x 64 pixel external OLED display using the SSD1306 chipset
+
 ### 1.3.1 (2020-12-13)
 - Astral for dimming using sunrise/sunset has a breaking change starting with python 3.6
 - - Made a fix to support both older raspberry pi running python 3.5 with Astral 1.10.1 as well as newer Raspberry images running Astral 2.2

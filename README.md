@@ -68,6 +68,37 @@ For time timings of the dimming there are two options:
 	* `LOCATION` - set this to the city you want to use for sunset/sunrise timings
 		* Use the closest city from the list of supported cities from https://astral.readthedocs.io/en/latest/#cities
 
+## Additional mini display to show METAR information functionality
+This optional functionality allows you to connect a small mini LED display to show the METAR information of the airports.
+
+For this functionality to work, you will need to buy a compatible LED display and enable and install a few additional things.
+
+I've written up some details on the display I used and the wiring here: https://slingtsi.rueker.com/adding-a-mini-display-to-show-metar-information-to-the-metar-map/
+
+To support the display you need to enable a few new libraries and settings on the raspberry pi.
+* [Enable I2C](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-4-gpio-setup/configuring-i2c)
+	* `sudo raspi-config`
+	* Interface Options
+	* I2C
+	* reboot the Reboot the Raspberry Pi `sudo reboot`
+	* Verify your wiring is working and I2C is enabled
+		* `sudo apt-get install i2c-tools`
+		* `sudo i2cdetect -y 1` - this should show something connected at **3C**
+* install python library for the display
+	* `sudo pip3 install adafruit-circuitpython-ssd1306`
+	* `sudo pip3 install pillow`
+* install additional libraries needed to fill the display
+	* `sudo apt-get install ttf-dejavu`
+	* `sudo apt-get install libjpeg-dev -y`
+	* `sudo apt-get install zlib1g-dev -y`
+	* `sudo apt-get install libfreetype6-dev -y`
+	* `sudo apt-get install liblcms1-dev -y`
+	* `sudo apt-get install libopenjp2-7 -y`
+	* `sudo apt-get install libtiff5 -y`
+* copy new file **[displaymetar.py](displaymetar.py)** into the same folder as **[metar.py](metar.py)**
+* Use the latest version of **[metar.py](metar.py)** and **[pixelsoff.py](pixelsoff.py)** for the new functionality
+* Configure **[metar.py](metar.py)** and set **`ACTIVATE_EXTERNAL_METAR_DISPLAY`** parameter to **True**.
+* Configure the `DISPLAY_ROTATION_SPEED` to your desired timing, I'm using 5 seconds for mine.
 
 ## Changelist
 To see a list of changes to the metar script over time, refer to [CHANGELIST.md](CHANGELIST.md)
