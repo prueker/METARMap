@@ -149,6 +149,6 @@ def changeDisplay(time):
     time_utc = time.replace(tzinfo=timezone('UTC'))
     time_in_tz = time_utc.astimezone(timezone(TIME_ZONE))
     clear()
-    draw.text((0, 4), time_in_tz.strftime('%a %H:%M'), font=font, fill=255)
-    disp.image(image)
+    draw.text((0, -4), time_in_tz.strftime('%a %H:%M'), font=font, fill=255)
+    disp.image(image.transpose(Image.FLIP_TOP_BOTTOM).transpose(Image.FLIP_LEFT_RIGHT))
     disp.show()
