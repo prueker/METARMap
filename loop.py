@@ -31,7 +31,7 @@ i2c = busio.I2C(board.SCL, board.SDA)   # Create the I2C bus
 ads = ADS.ADS1115(i2c)                  # Create the ADC object using the I2C bus
 chan = AnalogIn(ads, ADS.P0)            # Create single-ended input on channel 0
 
-with open("./airports") as f:
+with open("/home/pi/METARMap/airports") as f:
     airports = f.readlines()
 airports = [x.strip() for x in airports]
 
