@@ -1,4 +1,4 @@
-### 1.3.0 (2020-12-06)
+### 1.5.0 (2020-12-24)
 
 **Major update**
 
@@ -9,6 +9,22 @@ No changes affect the existing `metar.py` script functionality
 - New lib, `lib/forecast.py` to compute flight category (+ more) by time based on TAF
 - New lib, `lib/display.py` to update the lights and accompanying OLED screen (only used by `loop.py`)
 - New example scripts in `examples` to help initial development. The metar and taf examples can be run outside of a Raspberry Pi environment
+
+### 1.4.1 (2020-12-16)
+- Small bugfix for CLR skycondition (which doesn't have a cloudbase)
+
+### 1.4.0 (2020-12-15)
+- Adding functionality to display METAR information for the airports in use on a small external display
+- - Code is written for a 128 x 64 pixel external OLED display using the SSD1306 chipset
+
+### 1.3.1 (2020-12-13)
+- Astral for dimming using sunrise/sunset has a breaking change starting with python 3.6
+- - Made a fix to support both older raspberry pi running python 3.5 with Astral 1.10.1 as well as newer Raspberry images running Astral 2.2
+
+### 1.3.0 (2020-12-12)
+- Adding functionality to dim the lights between certain times of day
+  - Either as a fixed time of day
+  - or using local sunrise/sunset times
 
 ### 1.2.3 (2020-11-19)
 - Aviationweather.gov has stopped accepting the default user agent for urllib
