@@ -16,6 +16,7 @@ width = disp.width
 height = disp.height
 
 image = Image.new('1', (width, height))
+image = image.transpose(Image.FLIP_TOP_BOTTOM).transpose(Image.FLIP_LEFT_RIGHT)
 draw = ImageDraw.Draw(image)
 
 # Black box to clear image

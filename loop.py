@@ -10,18 +10,28 @@ import board
 import busio
 import adafruit_ads1x15.ads1115 as ADS
 from adafruit_ads1x15.analog_in import AnalogIn
+from logging.handlers import RotatingFileHandler
 
 from lib.forecast import generateForecast
 from lib.display import changeDisplay, changeLightsBasedOnMetar, changeLightsBasedOnTaf
 
 logDateFormat = '%m/%d %H:%M:%S'
-logging.basicConfig(filename='metar-map.log', level=logging.INFO, format='%(asctime)s %(message)s', datefmt=logDateFormat)
+logFormatter = logging.Formatter(fmt='%(asctime)s %(message)s', datefmt=logDateFormat)
+
+logHandler = RotatingFileHandler('metar-map.log', maxBytes=5*1024*1024, backupCount=1, delay=0)
+logHandler.setFormatter(logFormatter)
+logHandler.setLevel(logging.INFO)
+
+logger = logging.getLogger('root')
+logger.setLevel(logging.INFO)
+logger.addHandler(logHandler)
+
 
 i2c = busio.I2C(board.SCL, board.SDA)   # Create the I2C bus
 ads = ADS.ADS1115(i2c)                  # Create the ADC object using the I2C bus
 chan = AnalogIn(ads, ADS.P0)            # Create single-ended input on channel 0
 
-with open("./airports") as f:
+with open("/home/pi/METARMap/airports") as f:
     airports = f.readlines()
 airports = [x.strip() for x in airports]
 
@@ -45,7 +55,7 @@ metarDict = { "":"" }
 forecastDict = { "":"" }
 
 def populateMetars():
-    logging.info('Fetching METARs')
+    logger.info('Fetching METARs')
     req = urllib.request.Request(METAR_URL, headers={
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36 Edg/86.0.622.69'
     })
@@ -74,7 +84,7 @@ def populateMetars():
         }
 
 def populateForecasts():
-    logging.info('Fetching TAFs')
+    logger.info('Fetching TAFs')
     req = urllib.request.Request(FORECAST_URL, headers={
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36 Edg/86.0.622.69'
     })
@@ -91,10 +101,10 @@ def changeLights():
     forecastTime = datetime.datetime.now() + datetime.timedelta(hours=currentViewingTimeDelta)
     changeDisplay(forecastTime)
     if (currentViewingTimeDelta == 0):
-        logging.info('Setting lights for observation: %s', forecastTime.strftime(logDateFormat))
+        logger.info('Setting lights for observation: %s', forecastTime.strftime(logDateFormat))
         changeLightsBasedOnMetar(airports, metarDict)
     else:
-        logging.info('Setting lights for forecast: %s', forecastTime.strftime(logDateFormat))
+        logger.info('Setting lights for forecast: %s', forecastTime.strftime(logDateFormat))
         changeLightsBasedOnTaf(airports, forecastDict, forecastTime)
 
 ################### Scheduling functions ####################
@@ -103,7 +113,7 @@ def checkIfChanged():
     viewingTimeDelta = getViewingTime()
     changed = viewingTimeDelta != currentViewingTimeDelta
     if (changed):
-        logging.info('Detected slider step change:\n\t(Volt: %4.3f, Value: %d, OldDelta: %d, NewDelta: %d)',
+        logger.info('Detected slider step change:\n\t(Volt: %4.3f, Value: %d, OldDelta: %d, NewDelta: %d)',
             chan.voltage, chan.value, currentViewingTimeDelta, viewingTimeDelta
         )
         currentViewingTimeDelta = viewingTimeDelta

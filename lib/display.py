@@ -10,7 +10,7 @@ TIME_ZONE = 'US/Eastern'
 
 LED_PIN         = board.D18             # GPIO pin connected to the pixels (18 is PCM).
 LED_COUNT       = 50                    # Number of LED pixels.
-LED_BRIGHTNESS  = 0.1                   # Float from 0.0 (min) to 1.0 (max)
+LED_BRIGHTNESS  = 0.3                   # Float from 0.0 (min) to 1.0 (max)
 
 BLINK_RATE = 1
 BLINK_WIND_THRESHOLD = 12
@@ -93,7 +93,6 @@ def cancelAllBlinks():
 
 def changeLightsBasedOnMetar(airports, metarDict):
     # TODO: IMPLEMENT AND TEST BLINKING FOR LIGHTNING (can't find a TAF with lightning yet)
-    print('OBSERVING')
     cancelAllBlinks()
     i = 0
     for airportcode in airports:
@@ -111,7 +110,6 @@ def changeLightsBasedOnMetar(airports, metarDict):
         lightning = metar.get('lightning', False)
         color = getColorForFlightCategory(flightCategory)
         pixels[i] = color
-        print('SETTING', airportcode, flightCategory, windSpeed, windGust, lightning)
         shouldBlink = ((windSpeed > BLINK_WIND_THRESHOLD and ANIMATE_BLINK_FOR_WIND)
             or (windGust > BLINK_GUST_THRESHOLD and ANIMATE_BLINK_FOR_GUST))
         if (shouldBlink):
@@ -121,7 +119,6 @@ def changeLightsBasedOnMetar(airports, metarDict):
 
 def changeLightsBasedOnTaf(airports, forecastDict, forecastTime):
     # TODO: IMPLEMENT AND TEST BLINKING FOR LIGHTNING (can't find a TAF with lightning yet)
-    print('FORECASTING', forecastTime)
     cancelAllBlinks()
     i = 0
     for airportcode in airports:
@@ -143,7 +140,6 @@ def changeLightsBasedOnTaf(airports, forecastDict, forecastTime):
         pixels[i] = color
         shouldBlink = ((windSpeed > BLINK_WIND_THRESHOLD and ANIMATE_BLINK_FOR_WIND)
             or (windGust > BLINK_GUST_THRESHOLD and ANIMATE_BLINK_FOR_GUST))
-        print('SETTING', airportcode, flightCategory, windSpeed, windGust, lightning)
         if (shouldBlink):
             blink(i, color)
         i += 1
@@ -153,6 +149,6 @@ def changeDisplay(time):
     time_utc = time.replace(tzinfo=timezone('UTC'))
     time_in_tz = time_utc.astimezone(timezone(TIME_ZONE))
     clear()
-    draw.text((0, 4), time_in_tz.strftime('%a %H:%M'), font=font, fill=255)
-    disp.image(image)
+    draw.text((0, -4), time_in_tz.strftime('%a %H:%M'), font=font, fill=255)
+    disp.image(image.transpose(Image.FLIP_TOP_BOTTOM).transpose(Image.FLIP_LEFT_RIGHT))
     disp.show()

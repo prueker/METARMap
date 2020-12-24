@@ -76,8 +76,8 @@ def overrideForecastPeriod(period, overrides):
         overrideEndTime = datetime.datetime.strptime(override.find('fcst_time_to').text, '%Y-%m-%dT%H:%M:%SZ')
         overrideVisibility = override.find('visibility_statute_mi') is not None and override.find('visibility_statute_mi').text
         overrideCeiling = findMinimumCeiling(override)
-        overrideWindSpeed = override.find('wind_speed_kt') is not None and override.find('wind_speed_kt').text
-        overrideWindGust = override.find('wind_gust_kt') is not None and override.find('wind_gust_kt').text
+        overrideWindSpeed = override.find('wind_speed_kt') is not None and int(override.find('wind_speed_kt').text)
+        overrideWindGust = override.find('wind_gust_kt') is not None and int(override.find('wind_gust_kt').text)
         overrideLightning = False
         if override.find('raw_text') is not None:
             lightning = False if override.find('raw_text').text.find('LTG') == -1 else True
@@ -103,10 +103,8 @@ def findFlightCategory(forecast):
     ceiling = int(forecast["ceiling"] or THRESH_MVFR_CEILING)
     visibility = float(forecast["visibility"])
     if ceiling is None:
-        print("Missing ceiling, skipping")
         return
     if visibility is None:
-        print("Missing visibility, skipping")
         return
 
     ceilingCategory = VFR
