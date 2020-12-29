@@ -22,7 +22,7 @@ except ImportError:
 # ---------------------------------------------------------------------------
 
 # NeoPixel LED Configuration
-LED_COUNT		= 50			# Number of LED pixels.
+LED_COUNT		= 30			# Number of LED pixels.
 LED_PIN			= board.D18		# GPIO pin connected to the pixels (18 is PCM).
 LED_BRIGHTNESS		= 0.5			# Float from 0.0 (min) to 1.0 (max)
 LED_ORDER		= neopixel.GRB		# Strip type and colour ordering
@@ -40,9 +40,9 @@ COLOR_LIGHTNING		= (255,255,255)		# White
 
 # ----- Blink/Fade functionality for Wind and Lightning -----
 # Do you want the METARMap to be static to just show flight conditions, or do you also want blinking/fading based on current wind conditions
-ACTIVATE_WINDCONDITION_ANIMATION = False	# Set this to False for Static or True for animated wind conditions
+ACTIVATE_WINDCONDITION_ANIMATION = True	# Set this to False for Static or True for animated wind conditions
 #Do you want the Map to Flash white for lightning in the area
-ACTIVATE_LIGHTNING_ANIMATION = False		# Set this to False for Static or True for animated Lightning
+ACTIVATE_LIGHTNING_ANIMATION = True		# Set this to False for Static or True for animated Lightning
 # Fade instead of blink
 FADE_INSTEAD_OF_BLINK	= True			# Set to False if you want blinking
 # Blinking Windspeed Threshold
@@ -52,19 +52,19 @@ ALWAYS_BLINK_FOR_GUSTS	= False			# Always animate for Gusts (regardless of speed
 BLINK_SPEED		= 1.0			# Float in seconds, e.g. 0.5 for half a second
 # Total blinking time in seconds.
 # For example set this to 300 to keep blinking for 5 minutes if you plan to run the script every 5 minutes to fetch the updated weather
-BLINK_TOTALTIME_SECONDS	= 300
+BLINK_TOTALTIME_SECONDS	= 600
 
 # ----- Daytime dimming of LEDs based on time of day or Sunset/Sunrise -----
-ACTIVATE_DAYTIME_DIMMING = False		# Set to True if you want to dim the map after a certain time of day
+ACTIVATE_DAYTIME_DIMMING = True		# Set to True if you want to dim the map after a certain time of day
 BRIGHT_TIME_START	= datetime.time(7,0)	# Time of day to run at LED_BRIGHTNESS in hours and minutes
 DIM_TIME_START		= datetime.time(19,0)	# Time of day to run at LED_BRIGHTNESS_DIM in hours and minutes
 LED_BRIGHTNESS_DIM	= 0.1			# Float from 0.0 (min) to 1.0 (max)
 
 USE_SUNRISE_SUNSET 	= True			# Set to True if instead of fixed times for bright/dimming, you want to use local sunrise/sunset
-LOCATION 		= "Seattle"		# Nearby city for Sunset/Sunrise timing, refer to https://astral.readthedocs.io/en/latest/#cities for list of cities supported
+LOCATION 		= "Dallas"		# Nearby city for Sunset/Sunrise timing, refer to https://astral.readthedocs.io/en/latest/#cities for list of cities supported
 
 # ----- External Display support -----
-ACTIVATE_EXTERNAL_METAR_DISPLAY = False		# Set to True if you want to display METAR conditions to a small external display
+ACTIVATE_EXTERNAL_METAR_DISPLAY = True		# Set to True if you want to display METAR conditions to a small external display
 DISPLAY_ROTATION_SPEED = 5.0			# Float in seconds, e.g 2.0 for two seconds
 
 # ---------------------------------------------------------------------------
@@ -111,7 +111,7 @@ print("External Display:" + str(ACTIVATE_EXTERNAL_METAR_DISPLAY))
 pixels = neopixel.NeoPixel(LED_PIN, LED_COUNT, brightness = LED_BRIGHTNESS_DIM if (ACTIVATE_DAYTIME_DIMMING and bright == False) else LED_BRIGHTNESS, pixel_order = LED_ORDER, auto_write = False)
 
 # Read the airports file to retrieve list of airports and use as order for LEDs
-with open("/home/pi/airports") as f:
+with open("/home/llhost/Dev/metarmap/airports_display") as f:
 	airports = f.readlines()
 airports = [x.strip() for x in airports]
 
@@ -169,8 +169,8 @@ for metar in root.iter('METAR'):
 	if metar.find('raw_text') is not None:
 		rawText = metar.find('raw_text').text
 		lightning = False if rawText.find('LTG') == -1 else True
-	print(stationId + ":" 
-	+ flightCategory + ":" 
+	print(stationId + ":"
+	+ flightCategory + ":"
 	+ str(windDir) + "@" + str(windSpeed) + ("G" + str(windGustSpeed) if windGust else "") + ":"
 	+ str(vis) + "SM:"
 	+ obs + ":"
@@ -206,6 +206,7 @@ while looplimit > 0:
 		color = COLOR_CLEAR
 		conditions = conditionDict.get(airportcode, None)
 		windy = False
+		print(conditionDict)
 		lightningConditions = False
 
 		if conditions != None:
@@ -232,7 +233,11 @@ while looplimit > 0:
 	# Rotate through airports METAR on external display
 	if disp is not None:
 		if displayTime <= DISPLAY_ROTATION_SPEED:
-			displaymetar.outputMetar(disp, stationList[displayAirportCounter], conditionDict.get(stationList[displayAirportCounter], None))
+			print('DisTime: ' + str(displayTime))
+			if displayTime <= DISPLAY_ROTATION_SPEED/2:
+				displaymetar.outputMetar1(disp, stationList[displayAirportCounter], conditionDict.get(stationList[displayAirportCounter], None))
+			else:
+				displaymetar.outputMetar2(disp, stationList[displayAirportCounter], conditionDict.get(stationList[displayAirportCounter], None))
 			displayTime += BLINK_SPEED
 		else:
 			displayTime = 0.0
