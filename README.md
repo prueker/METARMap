@@ -2,7 +2,7 @@
 Forked from prueker/METARMap  
   
 Items updated:  
-* The screen was lcuttered, so I added a cycle within a given airport to split the info over two screens.
+* The screen was cluttered, so I added a cycle within a given airport to split the info over two screens.
 *  Currently it will use half of the DISPLAY_ROTATION_SPEED to cycle. 
 * Tweaked with the display items, specifically now shows time in local (manually set) and Zulu
 * Separated out the light list and the metar update list. I might have 30 LEDS I want updated, but only want see the METAR for a few.

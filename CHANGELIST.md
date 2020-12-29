@@ -1,3 +1,7 @@
+### LLH1.4.2 (2020-12-28)
+- Added two cycles to each iaco. It will use half the DISPLAY_ROTATION_SPEED to cycle to the second screen.
+- Updated some of the values, including local time along with Zulu
+
 ### 1.4.1 (2020-12-16)
 - Small bugfix for CLR skycondition (which doesn't have a cloudbase)
 

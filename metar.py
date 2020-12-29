@@ -7,6 +7,7 @@ import neopixel
 import time
 import datetime
 import json
+import os
 try:
 	import astral
 except ImportError:
@@ -112,7 +113,7 @@ print("External Display:" + str(ACTIVATE_EXTERNAL_METAR_DISPLAY))
 pixels = neopixel.NeoPixel(LED_PIN, LED_COUNT, brightness = LED_BRIGHTNESS_DIM if (ACTIVATE_DAYTIME_DIMMING and bright == False) else LED_BRIGHTNESS, pixel_order = LED_ORDER, auto_write = False)
 
 # Read the airports file to retrieve list of airports and use as order for LEDs
-with open('/home/llhost/Dev/llhgit/METARMap/airports') as f:
+with open(os.path.realpath('airports')) as f:
 	data=f.read()
 airport_dict = json.loads(data)
 
