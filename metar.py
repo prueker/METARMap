@@ -6,6 +6,7 @@ import board
 import neopixel
 import time
 import datetime
+import json
 try:
 	import astral
 except ImportError:
@@ -65,7 +66,7 @@ LOCATION 		= "Dallas"		# Nearby city for Sunset/Sunrise timing, refer to https:/
 
 # ----- External Display support -----
 ACTIVATE_EXTERNAL_METAR_DISPLAY = True		# Set to True if you want to display METAR conditions to a small external display
-DISPLAY_ROTATION_SPEED = 5.0			# Float in seconds, e.g 2.0 for two seconds
+DISPLAY_ROTATION_SPEED = 6.0			# Float in seconds, e.g 2.0 for two seconds
 
 # ---------------------------------------------------------------------------
 # ------------END OF CONFIGURATION-------------------------------------------
@@ -111,13 +112,13 @@ print("External Display:" + str(ACTIVATE_EXTERNAL_METAR_DISPLAY))
 pixels = neopixel.NeoPixel(LED_PIN, LED_COUNT, brightness = LED_BRIGHTNESS_DIM if (ACTIVATE_DAYTIME_DIMMING and bright == False) else LED_BRIGHTNESS, pixel_order = LED_ORDER, auto_write = False)
 
 # Read the airports file to retrieve list of airports and use as order for LEDs
-with open("/home/llhost/Dev/metarmap/airports_display") as f:
-	airports = f.readlines()
-airports = [x.strip() for x in airports]
+with open('/home/llhost/Dev/metarmap/airports') as f:
+	data=f.read()
+airport_dict = json.loads(data)
 
 # Retrieve METAR from aviationweather.gov data server
 # Details about parameters can be found here: https://www.aviationweather.gov/dataserver/example?datatype=metar
-url = "https://www.aviationweather.gov/adds/dataserver_current/httpparam?dataSource=metars&requestType=retrieve&format=xml&hoursBeforeNow=5&mostRecentForEachStation=true&stationString=" + ",".join([item for item in airports if item != "NULL"])
+url = "https://www.aviationweather.gov/adds/dataserver_current/httpparam?dataSource=metars&requestType=retrieve&format=xml&hoursBeforeNow=5&mostRecentForEachStation=true&stationString=" + ",".join([item for item in list(airport_dict.keys()) if item != "NULL"])
 print(url)
 req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36 Edg/86.0.622.69'})
 content = urllib.request.urlopen(req).read()
@@ -127,6 +128,7 @@ root = ET.fromstring(content)
 conditionDict = { "NULL": {"flightCategory" : "", "windDir": "", "windSpeed" : 0, "windGustSpeed" :  0, "windGust" : False, "lightning": False, "tempC" : 0, "dewpointC" : 0, "vis" : 0, "altimHg" : 0, "obs" : "", "skyConditions" : {}, "obsTime" : datetime.datetime.now() } }
 conditionDict.pop("NULL")
 stationList = []
+displayList=[]
 for metar in root.iter('METAR'):
 	stationId = metar.find('station_id').text
 	if metar.find('flight_category') is None:
@@ -180,6 +182,10 @@ for metar in root.iter('METAR'):
 	+ str(lightning))
 	conditionDict[stationId] = { "flightCategory" : flightCategory, "windDir": windDir, "windSpeed" : windSpeed, "windGustSpeed": windGustSpeed, "windGust": windGust, "vis": vis, "obs" : obs, "tempC" : tempC, "dewpointC" : dewpointC, "altimHg" : altimHg, "lightning": lightning, "skyConditions" : skyConditions, "obsTime": obsTime }
 	stationList.append(stationId)
+	if (airport_dict[stationId]):
+		displayList.append(stationId)
+
+print(conditionDict)
 
 # Start up external display output
 disp = None
@@ -194,19 +200,19 @@ looplimit = int(round(BLINK_TOTALTIME_SECONDS / BLINK_SPEED)) if (ACTIVATE_WINDC
 windCycle = False
 displayTime = 0.0
 displayAirportCounter = 0
-numAirports = len(stationList)
+numAirports = len(displayList)
 while looplimit > 0:
 	i = 0
-	for airportcode in airports:
+	for airport in list(airport_dict.keys()):
 		# Skip NULL entries
-		if airportcode == "NULL":
+		if airport == "NULL":
 			i += 1
 			continue
 
 		color = COLOR_CLEAR
-		conditions = conditionDict.get(airportcode, None)
+		conditions = conditionDict.get(airport, None)
 		windy = False
-		print(conditionDict)
+# 		print(conditionDict)
 		lightningConditions = False
 
 		if conditions != None:
@@ -223,7 +229,7 @@ while looplimit > 0:
 			else:
 				color = COLOR_CLEAR
 
-		print("Setting LED " + str(i) + " for " + airportcode + " to " + ("lightning " if lightningConditions else "") + ("windy " if windy else "") + (conditions["flightCategory"] if conditions != None else "None") + " " + str(color))
+		print("Setting LED " + str(i) + " for " + airport + " to " + ("lightning " if lightningConditions else "") + ("windy " if windy else "") + (conditions["flightCategory"] if conditions != None else "None") + " " + str(color))
 		pixels[i] = color
 		i += 1
 
@@ -233,16 +239,15 @@ while looplimit > 0:
 	# Rotate through airports METAR on external display
 	if disp is not None:
 		if displayTime <= DISPLAY_ROTATION_SPEED:
-			print('DisTime: ' + str(displayTime))
 			if displayTime <= DISPLAY_ROTATION_SPEED/2:
-				displaymetar.outputMetar1(disp, stationList[displayAirportCounter], conditionDict.get(stationList[displayAirportCounter], None))
+				displaymetar.outputMetar1(disp, displayList[displayAirportCounter], conditionDict.get(displayList[displayAirportCounter], None))
 			else:
-				displaymetar.outputMetar2(disp, stationList[displayAirportCounter], conditionDict.get(stationList[displayAirportCounter], None))
+				displaymetar.outputMetar2(disp, displayList[displayAirportCounter], conditionDict.get(displayList[displayAirportCounter], None))
 			displayTime += BLINK_SPEED
 		else:
 			displayTime = 0.0
 			displayAirportCounter = displayAirportCounter + 1 if displayAirportCounter < numAirports-1 else 0
-			print("showing METAR Display for " + stationList[displayAirportCounter])
+			print("showing METAR Display for " + displayList[displayAirportCounter])
 
 	# Switching between animation cycles
 	time.sleep(BLINK_SPEED)
