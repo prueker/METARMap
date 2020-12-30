@@ -99,6 +99,7 @@ To support the display you need to enable a few new libraries and settings on th
 * Use the latest version of **[metar.py](metar.py)** and **[pixelsoff.py](pixelsoff.py)** for the new functionality
 * Configure **[metar.py](metar.py)** and set **`ACTIVATE_EXTERNAL_METAR_DISPLAY`** parameter to **True**.
 * Configure the `DISPLAY_ROTATION_SPEED` to your desired timing, I'm using 5 seconds for mine.
+* If you want to only show a subset of the airports on the display, create a new file in the folder called **displayairports** and add the airports that you want to be shown on the display to it
 
 ## Changelist
 To see a list of changes to the metar script over time, refer to [CHANGELIST.md](CHANGELIST.md)
