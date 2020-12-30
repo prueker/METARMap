@@ -15,7 +15,7 @@ try:
 except ImportError:
 	displaymetar = None
 
-# metar.py script iteration 1.4.1
+# metar.py script iteration 1.4.2
 
 # ---------------------------------------------------------------------------
 # ------------START OF CONFIGURATION-----------------------------------------
@@ -114,6 +114,14 @@ pixels = neopixel.NeoPixel(LED_PIN, LED_COUNT, brightness = LED_BRIGHTNESS_DIM i
 with open("/home/pi/airports") as f:
 	airports = f.readlines()
 airports = [x.strip() for x in airports]
+try:
+	with open("/home/pi/displayairports") as f2:
+		displayairports = f2.readlines()
+	displayairports = [x.strip() for x in displayairports]
+	print("Using subset airports for LED display")
+except IOError:
+	print("Rotating through all airports on LED display")
+	displayairports = None
 
 # Retrieve METAR from aviationweather.gov data server
 # Details about parameters can be found here: https://www.aviationweather.gov/dataserver/example?datatype=metar
@@ -179,7 +187,8 @@ for metar in root.iter('METAR'):
 	+ str(altimHg) + ":"
 	+ str(lightning))
 	conditionDict[stationId] = { "flightCategory" : flightCategory, "windDir": windDir, "windSpeed" : windSpeed, "windGustSpeed": windGustSpeed, "windGust": windGust, "vis": vis, "obs" : obs, "tempC" : tempC, "dewpointC" : dewpointC, "altimHg" : altimHg, "lightning": lightning, "skyConditions" : skyConditions, "obsTime": obsTime }
-	stationList.append(stationId)
+	if displayairports is None or stationId in displayairports:
+		stationList.append(stationId)
 
 # Start up external display output
 disp = None

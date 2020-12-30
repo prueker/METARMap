@@ -1,3 +1,6 @@
+### 1.4.2 (2020-12-29)
+- Added support to only rotate through a subset of airports on external display by adding a new file "displayairports" to the folder
+
 ### 1.4.1 (2020-12-16)
 - Small bugfix for CLR skycondition (which doesn't have a cloudbase)
 
