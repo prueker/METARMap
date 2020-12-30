@@ -24,7 +24,7 @@ except ImportError:
 # ---------------------------------------------------------------------------
 
 # NeoPixel LED Configuration
-LED_COUNT		= 30			# Number of LED pixels.
+LED_COUNT		= 50			# Number of LED pixels.
 LED_PIN			= board.D18		# GPIO pin connected to the pixels (18 is PCM).
 LED_BRIGHTNESS		= 0.5			# Float from 0.0 (min) to 1.0 (max)
 LED_ORDER		= neopixel.GRB		# Strip type and colour ordering
@@ -48,7 +48,7 @@ ACTIVATE_LIGHTNING_ANIMATION = True		# Set this to False for Static or True for 
 # Fade instead of blink
 FADE_INSTEAD_OF_BLINK	= True			# Set to False if you want blinking
 # Blinking Windspeed Threshold
-WIND_BLINK_THRESHOLD	= 15			# Knots of windspeed
+WIND_BLINK_THRESHOLD	= 18			# Knots of windspeed
 ALWAYS_BLINK_FOR_GUSTS	= False			# Always animate for Gusts (regardless of speeds)
 # Blinking Speed in seconds
 BLINK_SPEED		= 1.0			# Float in seconds, e.g. 0.5 for half a second
@@ -67,7 +67,7 @@ LOCATION 		= "Dallas"		# Nearby city for Sunset/Sunrise timing, refer to https:/
 
 # ----- External Display support -----
 ACTIVATE_EXTERNAL_METAR_DISPLAY = True		# Set to True if you want to display METAR conditions to a small external display
-DISPLAY_ROTATION_SPEED = 6.0			# Float in seconds, e.g 2.0 for two seconds
+DISPLAY_ROTATION_SPEED = 4.0			# Float in seconds, e.g 2.0 for two seconds
 
 # ---------------------------------------------------------------------------
 # ------------END OF CONFIGURATION-------------------------------------------
@@ -113,13 +113,14 @@ print("External Display:" + str(ACTIVATE_EXTERNAL_METAR_DISPLAY))
 pixels = neopixel.NeoPixel(LED_PIN, LED_COUNT, brightness = LED_BRIGHTNESS_DIM if (ACTIVATE_DAYTIME_DIMMING and bright == False) else LED_BRIGHTNESS, pixel_order = LED_ORDER, auto_write = False)
 
 # Read the airports file to retrieve list of airports and use as order for LEDs
-with open(os.path.realpath('airports')) as f:
+#os.path.dirname(__file__) or /home/pi/
+with open('/home/pi/'+'airports') as f:
 	data=f.read()
 airport_dict = json.loads(data)
 
 # Retrieve METAR from aviationweather.gov data server
 # Details about parameters can be found here: https://www.aviationweather.gov/dataserver/example?datatype=metar
-url = "https://www.aviationweather.gov/adds/dataserver_current/httpparam?dataSource=metars&requestType=retrieve&format=xml&hoursBeforeNow=5&mostRecentForEachStation=true&stationString=" + ",".join([item for item in list(airport_dict.keys()) if item != "NULL"])
+url = "https://www.aviationweather.gov/adds/dataserver_current/httpparam?dataSource=metars&requestType=retrieve&format=xml&hoursBeforeNow=5&mostRecentForEachStation=true&stationString=" + ",".join([item for item in list(airport_dict.keys()) if "NULL" not in item])
 print(url)
 req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36 Edg/86.0.622.69'})
 content = urllib.request.urlopen(req).read()
@@ -206,7 +207,7 @@ while looplimit > 0:
 	i = 0
 	for airport in list(airport_dict.keys()):
 		# Skip NULL entries
-		if airport == "NULL":
+		if "NULL" in airport:
 			i += 1
 			continue
 
@@ -230,7 +231,7 @@ while looplimit > 0:
 			else:
 				color = COLOR_CLEAR
 
-		print("Setting LED " + str(i) + " for " + airport + " to " + ("lightning " if lightningConditions else "") + ("windy " if windy else "") + (conditions["flightCategory"] if conditions != None else "None") + " " + str(color))
+		#print("Setting LED " + str(i) + " for " + airport + " to " + ("lightning " if lightningConditions else "") + ("windy " if windy else "") + (conditions["flightCategory"] if conditions != None else "None") + " " + str(color))
 		pixels[i] = color
 		i += 1
 
@@ -248,7 +249,7 @@ while looplimit > 0:
 		else:
 			displayTime = 0.0
 			displayAirportCounter = displayAirportCounter + 1 if displayAirportCounter < numAirports-1 else 0
-			print("showing METAR Display for " + displayList[displayAirportCounter])
+			#print("showing METAR Display for " + displayList[displayAirportCounter])
 
 	# Switching between animation cycles
 	time.sleep(BLINK_SPEED)
