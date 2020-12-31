@@ -1,17 +1,21 @@
-# METARMap
-Raspberry Pi project to visualize flight conditions on a map using WS8211 LEDs addressed via NeoPixel
+# METARMap (with TAF)
+
+## What's different about this than the parent repo?
+This file contains instructions for setting up the METARMap with TAF functionality. Unfortunately, due to technical details I won't get into here, I could not add the functionality on top of the existing parent repo's scripts, so I had to write some new ones. I ended up deleting all of the parent repo's scripts in favor of my own, to prevent confusion due to multiple entry points.
+
+It also requires some extra hardware on the Raspberry Pi, because you need a way to adjust the time for which the lights are forecasting. I came up with the following approach:
+1. A "potentiometer" is hooked up to the Pi (through an Analog-to-Digital Converter)
+1. An OLED screen is hooked up to the Pi
+1. The lights are hooked up to the Pi in the same manner as the regular METARMap.
+1. A script runs an infinitely running asynchronous event loop
+1. Recursive functions schedule themselves on the event loop after a delay period. By default, the data fetching schedules every 5 minutes while the potentiometer listener schedules every 0.2 seconds.
+1. If the potentiometer listener detects a change, it schedules an update to the OLED screen and lights
 
 ## Changelist
-To see a list of changes to the metar script over time, refer to [CHANGELIST.md](CHANGELIST.md)
-
-## TAF Functionality
-
-**!! READ THIS if you want to utilize forecasting !!**
-
-Forecasting ability (based of TAFs) has been added on 12/06/2020. Utilizing this feature requires running a totally separate script than what's listed below. The setup is also quite different, so a new instructions file was added, [TAF_README](TAF_README.md). If you'd like to utilize that, you can ignore everything here and follow those instructions instead. Anything common to both setups (such as package installations) will be listed there as well.
+To see a list of changes to the scripts over time, refer to [CHANGELIST.md](CHANGELIST.md)
 
 ## Detailed instructions
-I've created detailed instructions about the setup and parts used here: https://slingtsi.rueker.com/making-a-led-powered-metar-map-for-your-wall/
+The owner of the parent repo created detailed instructions about the setup and parts used here: https://slingtsi.rueker.com/making-a-led-powered-metar-map-for-your-wall/. However they are for the regular METARMap, and there are several additional steps for this version not included in those instructions.
 
 ## Software Setup
 * Install [Raspbian Buster Lite](https://www.raspberrypi.org/downloads/raspbian/) on SD card
@@ -24,91 +28,68 @@ I've created detailed instructions about the setup and parts used here: https://
 * Update packages
 	* `sudo apt-get update`
 	* `sudo apt-get upgrade`
-* Copy the **[metar.py](metar.py)**, **[pixelsoff.py](pixelsoff.py)**, **[airports](airports)**, **[refresh.sh](refresh.sh)** and **[lightsoff.sh](lightsoff.sh)** scripts into the pi home directory (/home/pi)
 * Install python3 and pip3 if not already installed
 	* `sudo apt-get install python3`
 	* `sudo apt-get install python3-pip`
+* **Ensure** python 3.7 or greater was installed
+  * `sudo python3 --version`
 * Install required python libraries for the project
 	* [Neopixel](https://learn.adafruit.com/neopixels-on-raspberry-pi/python-usage): `sudo pip3 install rpi_ws281x adafruit-circuitpython-neopixel`
-* Attach WS8211 LEDs to Raspberry Pi, if you are using just a few, you can connect the directly, otherwise you may need to also attach external power to the LEDs. For my purpose with 22 powered LEDs it was fine to just connect it directly. You can find [more details about wiring here](https://learn.adafruit.com/neopixels-on-raspberry-pi/raspberry-pi-wiring).
+  * [Analog-to-Digital Converter](https://learn.adafruit.com/raspberry-pi-analog-to-digital-converters/ads1015-slash-ads1115):
+    * `sudo apt-get install build-essential python-dev python-smbus`
+    * `sudo pip3 install adafruit-ads1x15`
+  * [OLED Screen](https://learn.adafruit.com/adafruit-pioled-128x32-mini-oled-for-raspberry-pi/usage):
+    * `sudo pip3 install adafruit-circuitpython-ssd1306`
+    * `sudo apt-get install python3-pil` (use apt-git b/c this also install other dependencies)
+* [Enable I2C](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-4-gpio-setup/configuring-i2c) on the Raspberry Pi. I2C is a communication protocol that allows multiple devices to communicate. All devices attach to the same I2C pins (SDA and SCL).
+* Attach WS8211 LEDs to Raspberry Pi
+  * If you've read the README.md for the regular METARMap, you may remember the instructions say you can power the strip of the Pi alone. I don't recommend that for this project given that the Pi will be powering 3 other devices on its 3v supply. I know very little about the allowed current draw on the Pi, but to be safe I used an external 5V (10A) power supply which powers both the Pi and the lights. You can find [more details about wiring here](https://learn.adafruit.com/neopixels-on-raspberry-pi/raspberry-pi-wiring).
+  * Connect to 5V external power, ground, and GPIO (18 by default)
+* Attach Analog-to-Digital Converter (ADC)
+  * Connect to Pi 3.3V and ground
+  * Connect SCL to Pi SCL and SDA to Pi SDA. These are for the Pi I2C
+* Attach potentiometer to ADC and Raspberry Pi (I used a 3.3V sliding potentiometer). There should be 3 pins. The potentiometer is analog, which is why it must go through the ADC before it reaches the Pi.
+  * Connect to Pi 3.3V and ground
+  * Connect the data line (whatever it's called on your potentiometer) to the ADC A0 pin
+* Attach OLED screen to Raspberry Pi
+  * Connect to Pi 3.3V and ground
+  * Connect SCL to Pi SCL and SDA to Pi SDA. These are for the Pi I2C
+* Test the devices separately by running the example scripts:
+  * `sudo python3 examples/screen.py`
+  * `sudo python3 examples/slider.py`
+  * **!!IF YOUR POTENTIOMETER!!** is not 3.3V, adjust the SLIDER_MAX_VOLTAGE in the `loop.py` script
+* Test the API fetches by running the example scripts:
+  * `sudo python3 examples/metar.py`
+  * `sudo python3 examples/taf.py`
 * Test the script by running it directly (it needs to run with root permissions to access the GPIO pins):
-	* `sudo python3 metar.py`
-* Make appropriate changes to the **[airports](airports)** file for the airports you want to use and change the **[metar.py](metar.py)** and **[pixelsoff.py](pixelsoff.py)** script to the correct **`LED_COUNT`** (including NULLs if you have LEDS in between airports that will stay off) and **`LED_BRIGHTNESS`** if you want to change it
-* To run the script automatically when you power the Raspberry Pi, you will need to grant permissions to execute the **[refresh.sh](refresh.sh)** and **[lightsoff.sh](lightsoff.sh)** script and read permissions to the **[airports](airports)**, **[metar.py](metar.py)** and **[pixelsoff.py](pixelsoff.py)** script using chmod:
-	* `chmod +x filename` will grant execute permissions
-	* `chmod +r filename` will grant write permissions
-* To have the script start up automatically and refresh in regular intervals, use crontab and set the appropriate interval. For an example you can refer to the [crontab](crontab) file in the GitHub repo (make sure you grant the file execute permissions beforehand to the refresh.sh and lightsoff.sh file). To edit your crontab type: **`crontab -e`**, after you are done with the edits, exit out by pressing **ctrl+x** and confirm the write operation
-	* The sample crontab will run the script every 5 minutes (the */5) between the hours of 7 to 21, which includes the 21 hour, so it means it will run until 21:55
-	* Then at 22:05 it will run the lightsoff.sh script, which will turn all the lights off
+	* `sudo python3 loop.py` (`CTRL+C` to cancel)
+* Make appropriate changes to the **airports** file for the airports you want to use and verify the `lib/display.py` file has the correct number of LEDs in **LED_COUNT** (it must be at least the number of LEDs on your strip) and change **LED_BRIGHTNESS** if you so desire
+* When you run `loop.py`, it runs infinitely until you press `CTRL+C`. Adjust the potentiometer and the screen should update with the forecasting time. The lights should adjust based on the weather conditions
+* You can write an `on.sh` and `off.sh` to start and stop the python `loop.py` script. Then you can use `crontab` to run them automatically at whatever time. See `crontab` docs.
+
+* **THERE IS NOT CURRENTLY A WAY** to run the script on startup (should be easy to figure out, but still developing)
 
 ## Additional Wind condition blinking/fading functionality
-I recently expanded the script to also take wind condition into account and if the wind exceeds a certain threshold, or if it is gusting, make the LED for that airport either blink on/off or to fade between  two shades of the current flight category color.
+The script also takes wind condition into account and if the wind exceeds a certain threshold, or if it is gusting, the LED for that airport will either blink on/off or fade between two shades of the current flight category color.
 
-If you want to use this extra functionality, then inside the **[metar.py](metar.py)** file set the **`ACTIVATE_WINDCONDITION_ANIMATION`** parameter to **True**.
-* There are a few additional parameters in the script you can configure to your liking:
-	* `FADE_INSTEAD_OF_BLINK` - set this to either **True** or **False** to switch between fading or blinking for the LEDs when conditions are windy
-	* `WIND_BLINK_THRESHOLD` - in Knots for normal wind speeds currently at the airport
-	* `ALWAYS_BLINK_FOR_GUSTS` - If you always want the blinking/fading to happen for gusts, regardless of the wind speed
-	* `BLINKS_SPEED` - How fast the blinking happens, I found 1 second to be a happy medium so it's not too busy, but you can also make it faster, for example every half a second by using 0.5
-	* `BLINK_TOTALTIME_SECONDS` = How long do you want the script to run. I have this set to 300 seconds as I have my crontab setup to re-run the script every 5 minutes to get the latest weather information
+#### Not all of the blinking/fading functionality from the parent repo has been ported over to this TAF version yet
+- [ ] Fading instead of blinking
+- [ ] Always blink for gusts
+
+If you do not want to use this extra functionality, then inside the **lib/display.py** file set the **ANIMATE_BLINK_FOR_WIND** parameter to **False**, and similarly for gusts and lightning. There are a few additional parameters in the script you can configure to your liking:
+  * ANIMATE_BLINK_FOR_WIND - If you want the blinking/fading to happen for high wind
+  * ANIMATE_BLINK_FOR_GUST - If you want the blinking/fading to happen for high gusts
+  * ~~ANIMATE_BLINK_FOR_LIGHTNING - If you want the flashing to happen for lightning~~
+  * ~~ALWAYS_BLINK_FOR_GUSTS - If you always want the blinking/fading to happen for gusts, regardless of the wind speed~~
+	* ~~FADE_INSTEAD_OF_BLINK - set this to either **True** or **False** to switch between fading or blinking for the LEDs when conditions are windy~~
+	* BLINK_WIND_THRESHOLD - in Knots, controls how fast wind needs to be in order to blink
+  * BLINK_GUST_THRESHOLD - in Knots, controls how fast gusts need to be in order to blink
+	* BLINK_RATE - How fast the blinking happens, I found 1 second to be a happy medium so it's not too busy, but you can also make it faster, for example every half a second by using 0.5
 
 ## Additional Lightning in the vicinity blinking functionality
-After the recent addition for wind condition animation, I got another request from someone if I could add a white blinking animation to represent lightning in the area.
+After the recent addition for wind condition animation, the author of the parent repo got another request from someone to add a white blinking animation to represent lightning in the area.
 Please note that due to the nature of the METAR system, this means that the METAR for this airport reports that there is Lightning somewhere in the vicinity of the airport, but not necessarily right at the airport.
 
-If you want to use this extra functionality, then inside the **[metar.py](metar.py)** file set the **`ACTIVATE_LIGHTNING_ANIMATION`** parameter to **True**.
+If you do not want to use this extra functionality, then inside the **lib/display.py** file set the **ANIMATE_BLINK_FOR_LIGHTNING** parameter to **False**.
 * This shares two configuration parameters together with the wind animation that you can modify as you like:
-	* `BLINKS_SPEED` - How fast the blinking happens, I found 1 second to be a happy medium so it's not too busy, but you can also make it faster, for example every half a second by using 0.5
-	* `BLINK_TOTALTIME_SECONDS` = How long do you want the script to run. I have this set to 300 seconds as I have my crontab setup to re-run the script every 5 minutes to get the latest weather information
-
-## Additional LED dimming functionality based on time of day
-This optional functionality allows you to run the LEDs at a dimmed lower level between a certain time of the day.
-
-If you want to use this extra functionality, then inside the **[metar.py](metar.py)** file set the **`ACTIVATE_DAYTIME_DIMMING`** parameter to **True**.
-Set the `LED_BRIGHTNESS_DIM` setting to the level you want to run when dimmed.
-
-For time timings of the dimming there are two options:
-* Fixed time of day dimming:
-	* `BRIGHT_TIME_START` - Set this to the beginning of the day when you want to run at the normal `LED_BRIGHTNESS` level
-	* `DIM_TIME_START` - Set this to the time where you want to run at a different `LED_BRIGHTNESS_DIM` level
-* Dimming based on local sunrise/sunset:
-	* For this to work, you need to install an additional library, run:
-		* `sudo pip3 install astral`
-	* `USE_SUNRISE_SUNSET` - Set this to **True** to use the dimming based on sunrise and sunset
-	* `LOCATION` - set this to the city you want to use for sunset/sunrise timings
-		* Use the closest city from the list of supported cities from https://astral.readthedocs.io/en/latest/#cities
-
-## Additional mini display to show METAR information functionality
-This optional functionality allows you to connect a small mini LED display to show the METAR information of the airports.
-
-For this functionality to work, you will need to buy a compatible LED display and enable and install a few additional things.
-
-I've written up some details on the display I used and the wiring here: https://slingtsi.rueker.com/adding-a-mini-display-to-show-metar-information-to-the-metar-map/
-
-To support the display you need to enable a few new libraries and settings on the raspberry pi.
-* [Enable I2C](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-4-gpio-setup/configuring-i2c)
-	* `sudo raspi-config`
-	* Interface Options
-	* I2C
-	* reboot the Reboot the Raspberry Pi `sudo reboot`
-	* Verify your wiring is working and I2C is enabled
-		* `sudo apt-get install i2c-tools`
-		* `sudo i2cdetect -y 1` - this should show something connected at **3C**
-* install python library for the display
-	* `sudo pip3 install adafruit-circuitpython-ssd1306`
-	* `sudo pip3 install pillow`
-* install additional libraries needed to fill the display
-	* `sudo apt-get install ttf-dejavu`
-	* `sudo apt-get install libjpeg-dev -y`
-	* `sudo apt-get install zlib1g-dev -y`
-	* `sudo apt-get install libfreetype6-dev -y`
-	* `sudo apt-get install liblcms1-dev -y`
-	* `sudo apt-get install libopenjp2-7 -y`
-	* `sudo apt-get install libtiff5 -y`
-* copy new file **[displaymetar.py](displaymetar.py)** into the same folder as **[metar.py](metar.py)**
-* Use the latest version of **[metar.py](metar.py)** and **[pixelsoff.py](pixelsoff.py)** for the new functionality
-* Configure **[metar.py](metar.py)** and set **`ACTIVATE_EXTERNAL_METAR_DISPLAY`** parameter to **True**.
-* Configure the `DISPLAY_ROTATION_SPEED` to your desired timing, I'm using 5 seconds for mine.
-
-## Changelist
-To see a list of changes to the metar script over time, refer to [CHANGELIST.md](CHANGELIST.md)
+	* BLINKS_SPEED - How fast the blinking happens, I found 1 second to be a happy medium so it's not too busy, but you can also make it faster, for example every half a second by using 0.5
