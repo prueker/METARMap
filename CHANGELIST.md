@@ -1,3 +1,9 @@
+### 2.0.0 (2020-12-31)
+
+- Removed all scripts from the parent repo's METAR functionality in favor of my new METAR/TAF functionality
+- I did this because my implementation diverged significantly from the parent repo's implementation and I don't plan on reconciling them. Since I needed to write totally new scripts, and a new entry point, I wanted to clean up my repo and remove anything unused.
+- Now the only entry point is `loop.py`, which uses the `lib/display.py` and `lib/forecast.py` scripts
+
 ### 1.5.0 (2020-12-24)
 
 **Major update**
