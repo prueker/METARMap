@@ -1,3 +1,7 @@
+### 1.4.3 (2021-05-06)
+- Small improvement to Lightning to also flash for Thunderstorm (TS)
+- Addition of `HIGH_WINDS_THRESHOLD` to flash to yellow if wind is at or above the threshold. If set to **`-1`** it will be disabled and normal wind flashing/fading will ocur based on the normal `WIND_BLINK_THRESHOLD` value
+
 ### 1.4.2 (2020-12-29)
 - Added support to only rotate through a subset of airports on external display by adding a new file "displayairports" to the folder
 
