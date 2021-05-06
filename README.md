@@ -41,6 +41,7 @@ If you want to use this extra functionality, then inside the **[metar.py](metar.
 	* `ALWAYS_BLINK_FOR_GUSTS` - If you always want the blinking/fading to happen for gusts, regardless of the wind speed
 	* `BLINKS_SPEED` - How fast the blinking happens, I found 1 second to be a happy medium so it's not too busy, but you can also make it faster, for example every half a second by using 0.5
 	* `BLINK_TOTALTIME_SECONDS` = How long do you want the script to run. I have this set to 300 seconds as I have my crontab setup to re-run the script every 5 minutes to get the latest weather information
+	* `HIGH_WINDS_THRESHOLD` - If you want LEDs to flash to Yellow for particularly high winds beyond the normal `WIND_BLINK_THRESHOLD` then set this variable in knots. If you only want normal blinking/fading based on `WIND_BLINK_THRESHOLD` then set the value for `HIGH_WINDS_THRESHOLD` to **`-1`**
 	
 ## Additional Lightning in the vicinity blinking functionality
 After the recent addition for wind condition animation, I got another request from someone if I could add a white blinking animation to represent lightning in the area.
