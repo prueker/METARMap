@@ -67,8 +67,8 @@ def getColorForFlightCategory(flightCategory):
 
 def findForecastForTime(forecastTime, forecasts):
     for forecast in forecasts:
-        start = forecast.get('startTime')
-        end = forecast.get('endTime')
+        start = forecast.get('startTime').replace(tzinfo=timezone('UTC')).astimezone(timezone('UTC'))
+        end = forecast.get('endTime').replace(tzinfo=timezone('UTC')).astimezone(timezone('UTC'))
         if (start < forecastTime and forecastTime < end):
             return forecast
     return { "":"" }
