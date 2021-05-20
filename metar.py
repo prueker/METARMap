@@ -15,7 +15,7 @@ try:
 except ImportError:
 	displaymetar = None
 
-# metar.py script iteration 1.4.3
+# metar.py script iteration 1.5.0
 
 # ---------------------------------------------------------------------------
 # ------------START OF CONFIGURATION-----------------------------------------
@@ -48,7 +48,7 @@ ACTIVATE_LIGHTNING_ANIMATION = False		# Set this to False for Static or True for
 FADE_INSTEAD_OF_BLINK	= True			# Set to False if you want blinking
 # Blinking Windspeed Threshold
 WIND_BLINK_THRESHOLD	= 15			# Knots of windspeed to blink/fade
-HIGH_WINDS_THRESHOLD 	= 25 			# Knots of windspeed to trigger Yellow LED indicating very High Winds, set to -1 if you don't want to use this
+HIGH_WINDS_THRESHOLD	= 25			# Knots of windspeed to trigger Yellow LED indicating very High Winds, set to -1 if you don't want to use this
 ALWAYS_BLINK_FOR_GUSTS	= False			# Always animate for Gusts (regardless of speeds)
 # Blinking Speed in seconds
 BLINK_SPEED		= 1.0			# Float in seconds, e.g. 0.5 for half a second
@@ -68,6 +68,22 @@ LOCATION 		= "Seattle"		# Nearby city for Sunset/Sunrise timing, refer to https:
 # ----- External Display support -----
 ACTIVATE_EXTERNAL_METAR_DISPLAY = False		# Set to True if you want to display METAR conditions to a small external display
 DISPLAY_ROTATION_SPEED = 5.0			# Float in seconds, e.g 2.0 for two seconds
+
+# ----- Show a set of Legend LEDS at the end -----
+SHOW_LEGEND = True			# Set to true if you want to have a set of LEDs at the end show the legend
+# You'll need to add 7 LEDs at the end of your string of LEDs
+# If you want to offset the legend LEDs from the end of the last airport from the airports file,
+# then change this offset variable by the number of LEDs to skip before the LED that starts the legend
+OFFSET_LEGEND_BY = 0
+# The order of LEDs is:
+#	VFR
+#	MVFR
+#	IFR
+#	LIFR
+#	LIGHTNING
+#	WINDY
+#	HIGH WINDS
+
 
 # ---------------------------------------------------------------------------
 # ------------END OF CONFIGURATION-------------------------------------------
@@ -238,6 +254,19 @@ while looplimit > 0:
 		print("Setting LED " + str(i) + " for " + airportcode + " to " + ("lightning " if lightningConditions else "") + ("very " if highWinds else "") + ("windy " if windy else "") + (conditions["flightCategory"] if conditions != None else "None") + " " + str(color))
 		pixels[i] = color
 		i += 1
+
+	# Legend
+	if SHOW_LEGEND:
+		pixels[i + OFFSET_LEGEND_BY] = COLOR_VFR
+		pixels[i + OFFSET_LEGEND_BY + 1] = COLOR_MVFR
+		pixels[i + OFFSET_LEGEND_BY + 2] = COLOR_IFR
+		pixels[i + OFFSET_LEGEND_BY + 3] = COLOR_LIFR
+		if ACTIVATE_LIGHTNING_ANIMATION == True:
+			pixels[i + OFFSET_LEGEND_BY + 4] = COLOR_LIGHTNING if windCycle else COLOR_VFR # lightning
+		if ACTIVATE_WINDCONDITION_ANIMATION == True:
+			pixels[i+ OFFSET_LEGEND_BY + 5] = COLOR_VFR if not windCycle else (COLOR_VFR_FADE if FADE_INSTEAD_OF_BLINK else COLOR_CLEAR)    # windy
+			if HIGH_WINDS_THRESHOLD != -1:
+				pixels[i + OFFSET_LEGEND_BY + 6] = COLOR_VFR if not windCycle else COLOR_HIGH_WINDS  # high winds
 
 	# Update actual LEDs all at once
 	pixels.show()
