@@ -15,7 +15,7 @@ try:
 except ImportError:
 	displaymetar = None
 
-# metar.py script iteration 1.5.0
+# metar.py script iteration 1.5.1
 
 # ---------------------------------------------------------------------------
 # ------------START OF CONFIGURATION-----------------------------------------
@@ -194,7 +194,7 @@ for metar in root.iter('METAR'):
 		skyConditions.append(skyCond)
 	if metar.find('raw_text') is not None:
 		rawText = metar.find('raw_text').text
-		lightning = False if ((rawText.find('LTG') == -1 and rawText.find('TS') == -1) or rawText.find('TSNO') != -1) else True
+		lightning = False if ((rawText.find('LTG', 4) == -1 and rawText.find('TS', 4) == -1) or rawText.find('TSNO', 4) != -1) else True
 	print(stationId + ":" 
 	+ flightCategory + ":" 
 	+ str(windDir) + "@" + str(windSpeed) + ("G" + str(windGustSpeed) if windGust else "") + ":"

@@ -1,5 +1,10 @@
 # Changelist
 
+## 1.5.1 (2021-07-14)
+
+- Small fix to lightning detection to only start scanning the METAR text after the airport identifier (to avoid mistakenly showing lightning for airports like KTTS)
+
+
 ## 1.5.0 (2021-05-20)
 
 - Adding functionality for a Legend after the end of the last airport
