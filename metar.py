@@ -64,6 +64,7 @@ LED_BRIGHTNESS_DIM	= 0.1			# Float from 0.0 (min) to 1.0 (max)
 
 USE_SUNRISE_SUNSET 	= True			# Set to True if instead of fixed times for bright/dimming, you want to use local sunrise/sunset
 LOCATION 		= "Seattle"		# Nearby city for Sunset/Sunrise timing, refer to https://astral.readthedocs.io/en/latest/#cities for list of cities supported
+DIM_OFFSET_TIME		= 20			# minutes before or after sunrise/sunset to dim or brighten lights. Example: Dim lights 20 minutes before sunset
 
 # ----- External Display support -----
 ACTIVATE_EXTERNAL_METAR_DISPLAY = False		# Set to True if you want to display METAR conditions to a small external display
@@ -116,9 +117,10 @@ if astral is not None and USE_SUNRISE_SUNSET:
 		else:
 			print(city)
 			sun = astral.sun.sun(city.observer, date = datetime.datetime.now().date(), tzinfo=city.timezone)
-			BRIGHT_TIME_START = sun['sunrise'].time()
-			DIM_TIME_START = sun['sunset'].time()
-	print("Sunrise:" + BRIGHT_TIME_START.strftime('%H:%M') + " Sunset:" + DIM_TIME_START.strftime('%H:%M'))
+                        BRIGHT_TIME_START = (sun['sunrise'] + timedelta(minutes=DIM_OFFSET_TIME)).time()
+                        DIM_TIME_START = (sun['sunset'] - timedelta(minutes=DIM_OFFSET_TIME)).time()
+        print("bright time:" + BRIGHT_TIME_START.strftime('%H:%M') + " dim time:" + DIM_TIME_START.strftime('%H:%M'))
+        print("Sunrise:" + sun['sunrise'].time().strftime('%H:%M') + " Sunset:" + sun['sunset'].time().strftime('%H:%M'))
 
 # Initialize the LED strip
 bright = BRIGHT_TIME_START < datetime.datetime.now().time() < DIM_TIME_START
