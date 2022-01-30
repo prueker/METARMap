@@ -28,13 +28,17 @@ LED_BRIGHTNESS		= 0.5			# Float from 0.0 (min) to 1.0 (max)
 LED_ORDER		= neopixel.GRB		# Strip type and colour ordering
 
 COLOR_VFR		= (255,0,0)		# Green
-COLOR_VFR_FADE		= (125,0,0)		# Green Fade for wind
+COLOR_VFR_FADE		= (125,0,0)		# Green Fade for wind	
+COLOR_VFR_HIGHLIGHT	= (255,150,150)		# Green METAR display highlight
 COLOR_MVFR		= (0,0,255)		# Blue
 COLOR_MVFR_FADE		= (0,0,125)		# Blue Fade for wind
+COLOR_MVFR_HIGHLIGHT	= (150,150,255)		# Blue metar display hightlight
 COLOR_IFR		= (0,255,0)		# Red
 COLOR_IFR_FADE		= (0,125,0)		# Red Fade for wind
+COLOR_IFR_HIGHLIGHT	= (150,255,150)		# Red metar display hightlight
 COLOR_LIFR		= (0,125,125)		# Magenta
 COLOR_LIFR_FADE		= (0,75,75)		# Magenta Fade for wind
+COLOR_LIFR_HIGHLIGHT	= (80,125,125)		# Magenta metar display hightlight
 COLOR_CLEAR		= (0,0,0)		# Clear
 COLOR_LIGHTNING		= (255,255,255)		# White
 COLOR_HIGH_WINDS 	= (255,255,0) 		# Yellow
@@ -68,6 +72,7 @@ LOCATION 		= "Seattle"		# Nearby city for Sunset/Sunrise timing, refer to https:
 # ----- External Display support -----
 ACTIVATE_EXTERNAL_METAR_DISPLAY = False		# Set to True if you want to display METAR conditions to a small external display
 DISPLAY_ROTATION_SPEED = 5.0			# Float in seconds, e.g 2.0 for two seconds
+HIGHTLIGHT_DISPLAY_AIRPORT = True               # Brighten airport on map that is currently displaying METAR
 
 # ----- Show a set of Legend LEDS at the end -----
 SHOW_LEGEND = True			# Set to true if you want to have a set of LEDs at the end show the legend
@@ -220,7 +225,9 @@ looplimit = int(round(BLINK_TOTALTIME_SECONDS / BLINK_SPEED)) if (ACTIVATE_WINDC
 
 windCycle = False
 displayTime = 0.0
+displayCode = False
 displayAirportCounter = 0
+displayAirportCode = "NULL"
 numAirports = len(stationList)
 while looplimit > 0:
 	i = 0
@@ -235,19 +242,21 @@ while looplimit > 0:
 		windy = False
 		highWinds = False
 		lightningConditions = False
+		if airportcode == displayAirportCode:
+			displayCode = True
 
 		if conditions != None:
 			windy = True if (ACTIVATE_WINDCONDITION_ANIMATION and windCycle == True and (conditions["windSpeed"] >= WIND_BLINK_THRESHOLD or conditions["windGust"] == True)) else False
 			highWinds = True if (windy and HIGH_WINDS_THRESHOLD != -1 and (conditions["windSpeed"] >= HIGH_WINDS_THRESHOLD or conditions["windGustSpeed"] >= HIGH_WINDS_THRESHOLD)) else False
 			lightningConditions = True if (ACTIVATE_LIGHTNING_ANIMATION and windCycle == False and conditions["lightning"] == True) else False
 			if conditions["flightCategory"] == "VFR":
-				color = COLOR_VFR if not (windy or lightningConditions) else COLOR_LIGHTNING if lightningConditions else COLOR_HIGH_WINDS if highWinds else (COLOR_VFR_FADE if FADE_INSTEAD_OF_BLINK else COLOR_CLEAR) if windy else COLOR_CLEAR
+                                color = COLOR_VFR if not (windy or lightningConditions or displayCode) else COLOR_LIGHTNING if lightningConditions else COLOR_VFR_HIGHLIGHT if displayCode else COLOR_HIGH_WINDS
 			elif conditions["flightCategory"] == "MVFR":
-				color = COLOR_MVFR if not (windy or lightningConditions) else COLOR_LIGHTNING if lightningConditions else COLOR_HIGH_WINDS if highWinds else (COLOR_MVFR_FADE if FADE_INSTEAD_OF_BLINK else COLOR_CLEAR) if windy else COLOR_CLEAR
+				color = COLOR_MVFR if not (windy or lightningConditions or displayCode) else COLOR_LIGHTNING if lightningConditions else COLOR_MVFR_HIGHLIGHT if displayCode else COLOR_HIGH_WINDS if highWinds else (COLOR_MVFR_FADE if FADE_INSTEAD_OF_BLINK else COLOR_CLEAR) if windy else COLOR_CLEAR
 			elif conditions["flightCategory"] == "IFR":
-				color = COLOR_IFR if not (windy or lightningConditions) else COLOR_LIGHTNING if lightningConditions else COLOR_HIGH_WINDS if highWinds else (COLOR_IFR_FADE if FADE_INSTEAD_OF_BLINK else COLOR_CLEAR) if windy else COLOR_CLEAR
+				color = COLOR_IFR if not (windy or lightningConditions or displayCode) else COLOR_LIGHTNING if lightningConditions else COLOR_IFR_HIGHLIGHT if displayCode else COLOR_HIGH_WINDS if highWinds else (COLOR_IFR_FADE if FADE_INSTEAD_OF_BLINK else COLOR_CLEAR) if windy else COLOR_CLEAR
 			elif conditions["flightCategory"] == "LIFR":
-				color = COLOR_LIFR if not (windy or lightningConditions) else COLOR_LIGHTNING if lightningConditions else COLOR_HIGH_WINDS if highWinds else (COLOR_LIFR_FADE if FADE_INSTEAD_OF_BLINK else COLOR_CLEAR) if windy else COLOR_CLEAR
+				color = COLOR_LIFR if not (windy or lightningConditions or displayCode) else COLOR_LIGHTNING if lightningConditions else COLOR_LIFR_HIGHLIGHT if displayCode else COLOR_HIGH_WINDS if highWinds else (COLOR_LIFR_FADE if FADE_INSTEAD_OF_BLINK else COLOR_CLEAR) if windy else COLOR_CLEAR
 			else:
 				color = COLOR_CLEAR
 		
@@ -280,6 +289,7 @@ while looplimit > 0:
 			displayTime = 0.0
 			displayAirportCounter = displayAirportCounter + 1 if displayAirportCounter < numAirports-1 else 0
 			print("showing METAR Display for " + stationList[displayAirportCounter])
+			if HIGHTLIGHT_DISPLAY_AIRPORT: displayAirportCode = stationList[displayAirportCounter]
 
 	# Switching between animation cycles
 	time.sleep(BLINK_SPEED)
