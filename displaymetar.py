@@ -56,7 +56,11 @@ def outputMetar(disp, station, condition):
 	draw.text((x, top + 0), station + "-" + condition["flightCategory"], font=fontLarge, fill=255)
 	draw.text((x + 90, top + 0), condition["obsTime"].strftime("%H:%MZ"), font=fontSmall, fill=255)
 	
-	draw.text((x, top + 15), condition["windDir"] + "@" + str(condition["windSpeed"]) + ("G" + str(condition["windGustSpeed"]) if condition["windGust"] else ""), font=fontSmall, fill=255)
+        if condition["windSpeed"] == 0:
+                draw.text((x, top + 15), "Calm", font=fontSmall, fill=255)
+        else:
+                draw.text((x, top + 15), condition["windDir"] + "@" + str(condition["windSpeed"]) + ("G" + str(condition["windGust$
+
 	draw.text((x + 64, top + 15), str(condition["vis"]) + "SM " + condition["obs"], font=fontSmall, fill=255)
 	draw.text((x, top + 25), str(condition["tempC"]) + "C/" + str(condition["dewpointC"]) + "C", font=fontSmall, fill=255)
 	draw.text((x + 64, top + 25), "A" + str(condition["altimHg"]) + "Hg", font=fontSmall, fill=255)
