@@ -6,6 +6,7 @@ import board
 import neopixel
 import time
 import datetime
+from datetime import timedelta
 try:
 	import astral
 except ImportError:
@@ -250,18 +251,20 @@ while looplimit > 0:
 			highWinds = True if (windy and HIGH_WINDS_THRESHOLD != -1 and (conditions["windSpeed"] >= HIGH_WINDS_THRESHOLD or conditions["windGustSpeed"] >= HIGH_WINDS_THRESHOLD)) else False
 			lightningConditions = True if (ACTIVATE_LIGHTNING_ANIMATION and windCycle == False and conditions["lightning"] == True) else False
 			if conditions["flightCategory"] == "VFR":
-                                color = COLOR_VFR if not (windy or lightningConditions or displayCode) else COLOR_LIGHTNING if lightningConditions else COLOR_VFR_HIGHLIGHT if displayCode else COLOR_HIGH_WINDS
+				color = COLOR_VFR if not (windy or lightningConditions or displayCode) else COLOR_LIGHTNING if lightningConditions else COLOR_VFR_HIGHLIGHT if displayCode else COLOR_HIGH_WINDS if highWinds else COLOR_MVFR_FADE if FADE_INSTEAD_OF_BLINK else COLOR_CLEAR if windy else COLOR_CLEAR
 			elif conditions["flightCategory"] == "MVFR":
-				color = COLOR_MVFR if not (windy or lightningConditions or displayCode) else COLOR_LIGHTNING if lightningConditions else COLOR_MVFR_HIGHLIGHT if displayCode else COLOR_HIGH_WINDS if highWinds else (COLOR_MVFR_FADE if FADE_INSTEAD_OF_BLINK else COLOR_CLEAR) if windy else COLOR_CLEAR
+				color = COLOR_MVFR if not (windy or lightningConditions or displayCode) else COLOR_LIGHTNING if lightningConditions else COLOR_MVFR_HIGHLIGHT if displayCode else COLOR_HIGH_WINDS if highWinds else COLOR_MVFR_FADE if FADE_INSTEAD_OF_BLINK else COLOR_CLEAR if windy else COLOR_CLEAR
 			elif conditions["flightCategory"] == "IFR":
-				color = COLOR_IFR if not (windy or lightningConditions or displayCode) else COLOR_LIGHTNING if lightningConditions else COLOR_IFR_HIGHLIGHT if displayCode else COLOR_HIGH_WINDS if highWinds else (COLOR_IFR_FADE if FADE_INSTEAD_OF_BLINK else COLOR_CLEAR) if windy else COLOR_CLEAR
+				color = COLOR_IFR if not (windy or lightningConditions or displayCode) else COLOR_LIGHTNING if lightningConditions else COLOR_IFR_HIGHLIGHT if displayCode else COLOR_HIGH_WINDS if highWinds else COLOR_IFR_FADE if FADE_INSTEAD_OF_BLINK else COLOR_CLEAR if windy else COLOR_CLEAR
 			elif conditions["flightCategory"] == "LIFR":
-				color = COLOR_LIFR if not (windy or lightningConditions or displayCode) else COLOR_LIGHTNING if lightningConditions else COLOR_LIFR_HIGHLIGHT if displayCode else COLOR_HIGH_WINDS if highWinds else (COLOR_LIFR_FADE if FADE_INSTEAD_OF_BLINK else COLOR_CLEAR) if windy else COLOR_CLEAR
+				color = COLOR_LIFR if not (windy or lightningConditions or displayCode) else COLOR_LIGHTNING if lightningConditions else COLOR_LIFR_HIGHLIGHT if displayCode else COLOR_HIGH_WINDS if highWinds else COLOR_LIFR_FADE if FADE_INSTEAD_OF_BLINK else COLOR_CLEAR if windy else COLOR_CLEAR
 			else:
 				color = COLOR_CLEAR
 		
 		print("Setting LED " + str(i) + " for " + airportcode + " to " + ("lightning " if lightningConditions else "") + ("very " if highWinds else "") + ("windy " if windy else "") + (conditions["flightCategory"] if conditions != None else "None") + " " + str(color))
 		pixels[i] = color
+                displayCode = False
+
 		i += 1
 
 	# Legend
