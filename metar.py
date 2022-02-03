@@ -251,7 +251,7 @@ while looplimit > 0:
 			highWinds = True if (windy and HIGH_WINDS_THRESHOLD != -1 and (conditions["windSpeed"] >= HIGH_WINDS_THRESHOLD or conditions["windGustSpeed"] >= HIGH_WINDS_THRESHOLD)) else False
 			lightningConditions = True if (ACTIVATE_LIGHTNING_ANIMATION and windCycle == False and conditions["lightning"] == True) else False
 			if conditions["flightCategory"] == "VFR":
-				color = COLOR_VFR if not (windy or lightningConditions or displayCode) else COLOR_LIGHTNING if lightningConditions else COLOR_VFR_HIGHLIGHT if displayCode else COLOR_HIGH_WINDS if highWinds else COLOR_MVFR_FADE if FADE_INSTEAD_OF_BLINK else COLOR_CLEAR if windy else COLOR_CLEAR
+				color = COLOR_VFR if not (windy or lightningConditions or displayCode) else COLOR_LIGHTNING if lightningConditions else COLOR_VFR_HIGHLIGHT if displayCode else COLOR_HIGH_WINDS if highWinds else COLOR_VFR_FADE if FADE_INSTEAD_OF_BLINK else COLOR_CLEAR if windy else COLOR_CLEAR
 			elif conditions["flightCategory"] == "MVFR":
 				color = COLOR_MVFR if not (windy or lightningConditions or displayCode) else COLOR_LIGHTNING if lightningConditions else COLOR_MVFR_HIGHLIGHT if displayCode else COLOR_HIGH_WINDS if highWinds else COLOR_MVFR_FADE if FADE_INSTEAD_OF_BLINK else COLOR_CLEAR if windy else COLOR_CLEAR
 			elif conditions["flightCategory"] == "IFR":
