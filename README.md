@@ -78,6 +78,34 @@ For time timings of the dimming there are two options:
   * `LOCATION` - set this to the city you want to use for sunset/sunrise timings
     * Use the closest city from the list of supported cities from https://astral.readthedocs.io/en/latest/#cities
 
+## Using `map_toggle.sh`
+
+This script can be used to automatically update the crontab with a few preset values. Additionally, it is useful for controlling the map externally (via SSH or [Shortcuts](https://support.apple.com/guide/shortcuts/welcome/ios)).
+
+Place the **[map_toggle.sh](map_toggle.sh)** script into the pi home directory (`/home/pi`). 
+
+The script can be called with four different parameters (`on`/`off`/`shutdown`/`##-##`). Examples are provided below. 
+
+1. Turn the map on: `bash map_toggle.sh on`
+
+2. Turn the map off: `bash map_toggle.sh off`
+
+3. Turn the map on from 8 AM - 10 PM: `bash map_toggle.sh 8-22`
+
+4. Shutdown the Raspberry Pi: `bash map_toggle.sh shutdown`
+
+Once the script is installed, edits should be made to the crontab file so it does not contain any conflicting jobs. 
+
+Add the following line to your crontab file in order to automatically turn on your METAR Map when the Raspberry Pi boots up: `@reboot sleep 15 && /home/pi/refresh.sh`
+
+If you have an Apple device, you can install [this shortcut](https://www.icloud.com/shortcuts/89606c2285dc4cb69c5590a4beac9bfe) to launch utilize `map_toggle.sh` functionality remotely. With this, you are able to control your METAR Map while connected to your home network. 
+
+* You may need to [allow untrusted shortcuts](https://www.idownloadblog.com/2020/06/16/allow-untrusted-shortcuts-iphone-tutorial/) for this function to work. 
+
+* Once the shortcut is installed, click the three dots in the upper-right corner of the shortcut and edit the `HOST` (IP address) and `PASS` (password) text lines. Click the "x" when you are done. 
+
+* Execute the shortcut and select the desired menu option. 
+
 ## Additional mini display to show METAR information functionality
 
 This optional functionality allows you to connect a small mini LED display to show the METAR information of the airports.
@@ -122,7 +150,6 @@ If you want an interactive Legend to illustrate the possible behaviors you can d
 * **Note**: The Lightning and Wind Condition LEDs will only show if you are actually using these features based on the `ACTIVATE_LIGHTNING_ANIMATION`, `ACTIVATE_WINDCONDITION_ANIMATION` and `HIGH_WINDS_THRESHOLD` variables.
   * If you are not using any of these, then you only need 4 LEDs for the basic flight conditions for the Legend
   * If you are only using the Wind condition feature, but not the Lightning, you will still need the total of 7 LEDs (but the 5th LED for Lightning will just stay blank) or you'd have to change the order in the code
-
 
 ## Changelist
 
