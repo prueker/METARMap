@@ -98,7 +98,7 @@ Once the script is installed, edits should be made to the crontab file so it doe
 
 Add the following line to your crontab file in order to automatically turn on your METAR Map when the Raspberry Pi boots up: `@reboot sleep 15 && /home/pi/refresh.sh`
 
-If you have an Apple device, you can install [this shortcut](https://www.icloud.com/shortcuts/89606c2285dc4cb69c5590a4beac9bfe) to launch utilize `map_toggle.sh` functionality remotely. With this, you are able to control your METAR Map while connected to your home network. 
+If you have an Apple device, you can install [this shortcut](https://www.icloud.com/shortcuts/89606c2285dc4cb69c5590a4beac9bfe) to utilize `map_toggle.sh` functionality remotely. With this, you are able to control your METAR Map while connected to your home network. 
 
 * You may need to [allow untrusted shortcuts](https://www.idownloadblog.com/2020/06/16/allow-untrusted-shortcuts-iphone-tutorial/) for this function to work. 
 
