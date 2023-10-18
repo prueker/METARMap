@@ -15,7 +15,7 @@ try:
 except ImportError:
 	displaymetar = None
 
-# metar.py script iteration 1.6.0
+# metar.py script iteration 1.6.1
 
 # ---------------------------------------------------------------------------
 # ------------START OF CONFIGURATION-----------------------------------------
