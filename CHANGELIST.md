@@ -1,5 +1,10 @@
 # Changelist
 
+## 1.6.1 (2023-10-17)
+
+- Added a warning if too many airports versus LED_COUNT are trying to be used
+
+
 ## 1.6.0 (2023-10-17)
 
 - aviationweather.gov has retired the old web service url and replaced it with a new service, so an update to the URL as well as a small fix to the visibility reporting parameters was required
