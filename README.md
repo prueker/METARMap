@@ -100,7 +100,7 @@ To support the display you need to enable a few new libraries and settings on th
   * `sudo pip3 install adafruit-circuitpython-ssd1306`
   * `sudo pip3 install pillow`
 * install additional libraries needed to fill the display
-  * `sudo apt-get install ttf-dejavu`
+  * `sudo apt-get install fonts-dejavu`
   * `sudo apt-get install libjpeg-dev -y`
   * `sudo apt-get install zlib1g-dev -y`
   * `sudo apt-get install libfreetype6-dev -y`
