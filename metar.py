@@ -144,6 +144,7 @@ except IOError:
 if len(airports) > LED_COUNT:
 	print()
 	print("WARNING: Too many airports in airports file, please increase LED_COUNT or reduce the number of airports")
+	print("Airports: " + str(len(airports)) + " LED_COUNT: " + str(LED_COUNT))
 	print()
 	quit()
 
