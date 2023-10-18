@@ -1,5 +1,10 @@
 # Changelist
 
+## 1.6.0 (2023-10-17)
+
+- aviationweather.gov has retired the old web service url and replaced it with a new service, so an update to the URL as well as a small fix to the visibility reporting parameters was required
+
+
 ## 1.5.1 (2021-07-14)
 
 - Small fix to lightning detection to only start scanning the METAR text after the airport identifier (to avoid mistakenly showing lightning for airports like KTTS)
