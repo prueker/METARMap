@@ -70,7 +70,7 @@ ACTIVATE_EXTERNAL_METAR_DISPLAY = False		# Set to True if you want to display ME
 DISPLAY_ROTATION_SPEED = 5.0			# Float in seconds, e.g 2.0 for two seconds
 
 # ----- Show a set of Legend LEDS at the end -----
-SHOW_LEGEND = True			# Set to true if you want to have a set of LEDs at the end show the legend
+SHOW_LEGEND = False			# Set to true if you want to have a set of LEDs at the end show the legend
 # You'll need to add 7 LEDs at the end of your string of LEDs
 # If you want to offset the legend LEDs from the end of the last airport from the airports file,
 # then change this offset variable by the number of LEDs to skip before the LED that starts the legend
