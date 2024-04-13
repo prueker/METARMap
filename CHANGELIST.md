@@ -1,4 +1,8 @@
 # Changelist
+## 1.6.2 (2024-04-13)
+
+- Fixed an issue where an airport had an entry for the flight_category from the aviationweather.gov data, but wasn't actually sending a category, which caused failure for people that were using such an airport
+
 
 ## 1.6.1 (2023-10-17)
 
