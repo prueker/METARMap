@@ -1,23 +1,20 @@
 # Changelist
+
 ## 1.6.2 (2024-04-13)
 
 - Fixed an issue where an airport had an entry for the flight_category from the aviationweather.gov data, but wasn't actually sending a category, which caused failure for people that were using such an airport
-
 
 ## 1.6.1 (2023-10-17)
 
 - Added a warning if too many airports versus LED_COUNT are trying to be used
 
-
 ## 1.6.0 (2023-10-17)
 
 - aviationweather.gov has retired the old web service url and replaced it with a new service, so an update to the URL as well as a small fix to the visibility reporting parameters was required
 
-
 ## 1.5.1 (2021-07-14)
 
 - Small fix to lightning detection to only start scanning the METAR text after the airport identifier (to avoid mistakenly showing lightning for airports like KTTS)
-
 
 ## 1.5.0 (2021-05-20)
 
