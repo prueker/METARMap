@@ -1,6 +1,6 @@
 # Changelist
 
-## 1.6.2 (2024-04-15)
+## 1.6.3 (2024-04-15)
 
 - Fixed an issue where a metar record was received from the aviationweather.gov data, but wasn't actually sending a station id, which caused failure for people that were using such an airport
 
