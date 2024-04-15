@@ -15,7 +15,7 @@ try:
 except ImportError:
 	displaymetar = None
 
-# metar.py script iteration 1.6.2
+# metar.py script iteration 1.6.3
 
 # ---------------------------------------------------------------------------
 # ------------START OF CONFIGURATION-----------------------------------------
@@ -161,6 +161,9 @@ conditionDict = { "NULL": {"flightCategory" : "", "windDir": "", "windSpeed" : 0
 conditionDict.pop("NULL")
 stationList = []
 for metar in root.iter('METAR'):
+ if metar.find('station_id') is None or metar.find('station_id').text is None:
+		print("Missing station id, skipping.")
+		continue
 	stationId = metar.find('station_id').text
 	if metar.find('flight_category') is None or metar.find('flight_category').text is None:
 		print("Missing flight condition for " + stationId + ", skipping.")
