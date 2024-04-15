@@ -161,7 +161,7 @@ conditionDict = { "NULL": {"flightCategory" : "", "windDir": "", "windSpeed" : 0
 conditionDict.pop("NULL")
 stationList = []
 for metar in root.iter('METAR'):
- if metar.find('station_id') is None or metar.find('station_id').text is None:
+	if metar.find('station_id') is None or metar.find('station_id').text is None:
 		print("Missing station id, skipping.")
 		continue
 	stationId = metar.find('station_id').text
