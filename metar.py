@@ -164,11 +164,11 @@ for metar in root.iter('METAR'):
 	if metar.find('station_id') is None or metar.find('station_id').text is None:
 		print("Missing station id, skipping.")
 		continue
-	stationId = metar.find('station_id').text
-	if metar.find('flight_category') is None or metar.find('flight_category').text is None:
-		print("Missing flight condition for " + stationId + ", skipping.")
-		continue
-	flightCategory = metar.find('flight_category').text
+		stationId = metar.findtext('station_id') or ""
+		flightCategory = metar.findtext('flight_category') or ""
+		if flightCategory not in ("VFR", "MVFR", "IFR", "LIFR"):
+			print(f"{stationId}: Missing or invalid flight category, skipping.")
+			continue
 	windDir = ""
 	windSpeed = 0
 	windGustSpeed = 0
@@ -197,8 +197,7 @@ for metar in root.iter('METAR'):
 		vis = int(round(float(vis_str)))
 	if metar.find('altim_in_hg') is not None:
 		altimHg = float(round(float(metar.find('altim_in_hg').text), 2))
-	if metar.find('wx_string') is not None:
-		obs = metar.find('wx_string').text
+	obs = metar.findtext('wx_string') or ""
 	if metar.find('observation_time') is not None:
 		obsTime = datetime.datetime.fromisoformat(metar.find('observation_time').text.replace("Z","+00:00"))
 	for skyIter in metar.iter("sky_condition"):
